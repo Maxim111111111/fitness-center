@@ -1,0 +1,1451 @@
+body {
+  background-color: #00100f;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.header__top {
+  background-color: #004643;
+  max-height: 40px;
+  min-height: 40px;
+}
+
+.header__top-wrapper {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding-top: 11px;
+}
+
+.header__top-phone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header__top-phone-link {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.header__top-social {
+  display: flex;
+  gap: 30px;
+  padding-left: 40px;
+}
+
+.header__bottom {
+  background-color: #000908;
+  max-height: 80px;
+}
+
+.header__bottom-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 80px;
+}
+
+.header__menu-list {
+  display: flex;
+  gap: 42px;
+}
+
+.header__menu-item {
+  list-style: none;
+}
+
+.header__menu-link {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.header__menu-link:hover {
+  opacity: 1;
+}
+
+.main__banner {
+  background-image: url("../assets/img/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 120px);
+}
+
+.main__banner-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main__banner-content {
+  max-width: 600px;
+  margin-top: 61px;
+}
+
+.main__banner-title {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-size: 54px;
+  line-height: 120%;
+  color: #ffffff;
+  margin-bottom: 32px;
+}
+
+.main__banner-title-span {
+  color: #33b0aa;
+}
+
+.main__baner-adventages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.main__baner-adventage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.main__baner-adventage-text {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 140%;
+  color: #ffffff;
+}
+
+.main__banner-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.main__banner-button {
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 120%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 24px 0 rgba(40, 176, 169, 0.2);
+}
+
+.main__banner-button--primary,
+.main__banner-button--secondary {
+  min-width: 240px;
+  min-height: 54px;
+  padding: 0 32px;
+  white-space: normal;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: none;
+  max-height: none;
+  opacity: 1;
+}
+
+.main__banner-button--primary {
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 120%;
+  border-radius: 16px;
+  min-height: 54px;
+  min-width: 240px;
+  max-height: 54px;
+  max-width: 240px;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0 32px;
+  box-shadow: 0px 4px 24px 0px rgba(40, 176, 169, 0.2);
+  transition: all 0.3s ease;
+}
+
+.main__banner-button--secondary {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(181, 181, 181, 0.15) 100%
+  );
+  color: #ffffff;
+  border: none;
+  min-height: 54px;
+  min-width: 240px;
+}
+
+.main__banner-button-text {
+  opacity: 1;
+  color: #fff;
+  z-index: 1;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "Montserrat", sans-serif;
+}
+
+.adventage__cards {
+  margin-top: 82px;
+}
+
+.adventage__card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  max-width: 162px;
+  max-height: 129px;
+  min-width: 162px;
+  min-height: 129px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.adventage__card-title {
+  margin-bottom: 6px;
+  font-family: "Dela Gothic One", sans-serif;
+  font-size: 20px;
+  line-height: 140%;
+  color: #ffffff;
+  text-align: center;
+}
+
+.adventage__card-text {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  color: #ffffff;
+  opacity: 0.8;
+  text-align: center;
+}
+
+promotions_adversitising-wrapper {
+  font-family: system-ui;
+  background: #08001e;
+  color: white;
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 15px;
+  text-align: center;
+  padding: 30px;
+}
+
+.cont {
+  margin: 0;
+  width: 600px;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 2px solid #310a65;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #160024 25%, #001925 75%);
+  box-shadow: #000 6px 6px 12px;
+
+  &:has(input#bg1:checked) {
+    --index: 0;
+  }
+  &:has(input#bg2:checked) {
+    --index: 1;
+  }
+  &:has(input#bg3:checked) {
+    --index: 2;
+  }
+  &:has(input#bg4:checked) {
+    --index: 3;
+  }
+  &:has(input#bg5:checked) {
+    --index: 4;
+  }
+
+  &:has(input#bg1:checked) .nav label:first-child,
+  &:has(input#bg2:checked) .nav label:nth-child(2),
+  &:has(input#bg3:checked) .nav label:nth-child(3),
+  &:has(input#bg4:checked) .nav label:nth-child(4),
+  &:has(input#bg5:checked) .nav label:nth-child(5) {
+    background-color: #310a65;
+    border-color: #e0ccfa;
+  }
+}
+
+.slider {
+  height: 250px;
+  position: relative;
+  border: 2px solid #63e;
+  overflow: clip;
+}
+
+.main {
+  height: 100%;
+  display: flex;
+  translate: calc(-100% * var(--index, 0));
+  transition: translate 0.4s ease-in-out;
+
+  svg {
+    font-style: italic;
+    font-family: Impact, Arial, sans-serif;
+    fill: #63e;
+    stroke: #e0ccfa;
+    stroke-width: 0.5;
+  }
+}
+
+.item {
+  position: relative;
+  display: flex;
+  flex: 1 0 100%;
+  flex-direction: column;
+  background-color: #06040a;
+}
+
+.controls {
+  width: 100%;
+  position: absolute;
+  bottom: 6%;
+  display: flex;
+  justify-content: center;
+
+  div {
+    background-color: #000;
+    padding: 7px 12px;
+    border-radius: 10px;
+    display: inline-flex;
+    gap: 4px;
+  }
+
+  input {
+    appearance: none;
+    background-color: #310a65;
+    margin: 0;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #e0ccfaa0;
+    border-radius: 10px;
+    transition: width 0.2s ease, background-color 0.2s ease-out,
+      border-color 0.2s ease-out;
+
+    &:hover {
+      cursor: pointer;
+      border-color: #e0ccfa;
+    }
+
+    &:checked {
+      cursor: default;
+      width: 24px;
+      border-color: #e0ccfa;
+      background: #63e;
+    }
+  }
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 15px;
+  gap: 8px;
+
+  label {
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: solid 1px #63e;
+    font-size: 15px;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border 0.2s ease-out, background-color 0.2s ease;
+
+    &:hover {
+      border-color: #e0ccfaa0;
+    }
+  }
+}
+
+/* Promotions Section */
+.promotions {
+  background-image: url("../assets/img/promotion-bg2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 80px 0;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.promotions .container {
+  position: relative;
+  z-index: 2;
+}
+
+.promotions__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  margin-bottom: 40px;
+}
+
+.promotions__tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.promotions__tab {
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0.8;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+  backdrop-filter: blur(30px);
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.promotions__tab:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.promotions__tab.active {
+  background: transparent;
+  border: 1px solid #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.promotions__slider {
+  position: relative;
+  margin-top: 30px;
+  padding-bottom: 50px;
+}
+
+.swiper.promotions__swiper {
+  overflow: hidden;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.promotions__slide {
+  height: 350px;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.promotions__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: opacity 0.3s ease;
+}
+
+.promotions__button-prev,
+.promotions__button-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.promotions__button-prev:hover,
+.promotions__button-next:hover {
+  background: rgba(40, 176, 169, 0.7);
+  border-color: #fff;
+}
+
+.promotions__button-prev {
+  top: 175px;
+  left: -70px;
+}
+
+.promotions__button-next {
+  top: 155px;
+  right: -70px;
+  transform: rotate(180deg);
+}
+
+.reviews__button-prev {
+  top: 105px;
+  left: -70px;
+}
+
+.reviews__button-next {
+  top: 85px;
+  right: -70px;
+}
+.promotions__button-prev img,
+.promotions__button-next img {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 13px;
+}
+
+.arrow-border {
+  z-index: 1;
+}
+
+.arrow {
+  z-index: 2;
+}
+
+/* Swiper pagination */
+.swiper-pagination.promotions__pagination {
+  position: relative;
+  bottom: 0;
+  margin-top: 30px;
+}
+
+.promotions__bullet {
+  width: 14px !important;
+  height: 14px !important;
+  display: inline-block !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  opacity: 0.2 !important;
+  margin: 0 6px !important;
+  padding: 0 !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.promotions__bullet--active {
+  background: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Сброс стандартных стилей Swiper */
+.swiper-pagination-bullet {
+  width: 14px !important;
+  height: 14px !important;
+  background: #ffffff !important;
+  opacity: 0.2 !important;
+  margin: 0 6px !important;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+}
+
+/* Swiper arrows */
+.promotions__button-prev.swiper-button-disabled,
+.promotions__button-next.swiper-button-disabled {
+  opacity: 0.35;
+  cursor: auto;
+  pointer-events: none;
+}
+
+/* Размер слайдов на мобильных */
+@media (max-width: 768px) {
+  .promotions__slide {
+    height: 250px;
+  }
+
+  .promotions__tabs {
+    justify-content: center;
+  }
+
+  .promotions__title {
+    text-align: center;
+  }
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 176, 169, 0.3);
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-overlay::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading .loading-overlay {
+  opacity: 1;
+}
+
+.loading .loading-overlay::after {
+  display: block;
+}
+
+.about-company {
+  background-image: url("../assets/img/Bg3.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.about-company__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  margin-bottom: 40px;
+  color: #ffffff;
+  padding-top: 120px;
+}
+
+.about-company__title-span {
+  color: #33b0aa;
+}
+
+.about-company__content {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(181, 181, 181, 0.2) 100%
+  );
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 40px;
+}
+
+.about-company__content-text {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Montserrat", sans-serif;
+  color: #fff;
+  opacity: 0.8;
+  margin-bottom: 20px;
+  line-height: 140%;
+}
+
+.about-company__content-text-last {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Montserrat", sans-serif;
+  color: #fff;
+  opacity: 0.8;
+  line-height: 140%;
+}
+
+/* Directions Section */
+.directions {
+  padding: 120px 0;
+  background: #00100f;
+}
+
+.directions__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  line-height: 1.45;
+  color: #ffffff;
+  margin-bottom: 39px;
+}
+
+.directions__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.directions__card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.directions__card:hover {
+  transform: translateY(-5px);
+}
+
+.directions__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.directions__card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.directions__card-title {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  font-family: "Dela Gothic One", cursive;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #ffffff;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.directions__title-span {
+  color: #33b0aa;
+}
+
+@media (max-width: 1200px) {
+  .directions__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .directions__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .directions__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .directions__title {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .directions__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Trainers Section */
+.trainers {
+  background-image: url("../assets/img/Bg3.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.trainers__title {
+  padding-top: 120px;
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  line-height: 1.45;
+  color: #ffffff;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.trainers__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.trainers__card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 0.75;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.trainers__card:hover {
+  transform: translateY(-5px);
+}
+
+.trainers__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trainers__card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+  z-index: 1;
+}
+
+.trainers__card-content {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
+}
+
+.trainers__card-name {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.trainers__card-position {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #ffffff;
+  opacity: 0.6;
+}
+
+.trainers__pagination {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.trainers__pagination-bullet {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.trainers__pagination-bullet--active {
+  opacity: 1;
+}
+
+@media (max-width: 1200px) {
+  .trainers__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .trainers__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .trainers__title {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .trainers__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reviews {
+  background-image: none;
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+.reviews__wrapper {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(181, 181, 181, 0.2) 100%
+  );
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 30px;
+}
+
+.reviews__username {
+  font-family: "Montserrat", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 140%;
+  color: #ffffff;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.reviews__text {
+  margin-top: 2px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  line-height: 140%;
+  font-weight: 200;
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.reviews__stars {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+
+/* Contacts */
+.contacts {
+  background-color: #00100f;
+}
+
+.contacts__wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.contacts__content {
+  padding-right: 30px;
+}
+
+.contacts__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  line-height: 140%;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.contacts__info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contacts__item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contacts__label {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.contacts__text {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contacts__text:hover {
+  color: #28b0a9;
+}
+
+.contacts__map {
+  border-radius: 24px;
+  overflow: hidden;
+  height: 100%;
+  max-height: 304px;
+  min-width: 520px;
+}
+
+.contacts__map-container {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  border-radius: 24px;
+}
+
+.contacts__map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+  .contacts__wrapper {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contacts__content {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .contacts {
+    padding: 60px 0;
+  }
+
+  .contacts__title {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contacts {
+    padding: 40px 0;
+  }
+
+  .contacts__title {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+
+  .contacts__label {
+    font-size: 14px;
+  }
+
+  .contacts__text {
+    font-size: 16px;
+  }
+}
+
+/* Training Form */
+.training-form {
+  background-color: rgba(40, 176, 169, 0.05);
+  padding: 120px 0;
+  position: relative;
+}
+
+.training-form__wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.training-form__content {
+  max-width: 800px;
+  width: 100%;
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 60px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.training-form__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 50px;
+  line-height: 1.45;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.training-form__subtitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0.8;
+  margin-bottom: 60px;
+}
+
+.training-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.training-form__row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.training-form__field {
+  flex: 1;
+  position: relative;
+}
+
+.training-form__field.select-wrapper {
+  position: relative;
+}
+
+.training-form__field.select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-top: 0;
+  border-left: 0;
+  transform: translateY(-75%) rotate(45deg);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.training-form__input {
+  width: 100%;
+  padding: 16px 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(181, 181, 181, 0.2) 100%
+  ) !important;
+  backdrop-filter: blur(30px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  height: 56px;
+}
+
+.training-form__input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.training-form__input:focus {
+  outline: none;
+  border-color: rgba(40, 176, 169, 0.5);
+  box-shadow: 0 0 5px rgba(40, 176, 169, 0.3);
+}
+
+/* Explicitly match the background for select fields */
+
+/* Remove any extra background settings that might be overriding */
+
+/* Remove any background overrides */
+.training-form__select,
+input[type="date"],
+input[type="time"] {
+  background-color: transparent !important;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(181, 181, 181, 0.2) 100%
+  );
+}
+
+/* Override for select to prevent double background */
+select.training-form__select {
+  position: relative;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")
+      right 15px center / 15px no-repeat,
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(181, 181, 181, 0.2) 100%
+    );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 16px 45px 16px 20px;
+  cursor: pointer;
+  width: 100%;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  border-radius: 12px;
+}
+
+select.training-form__select:focus {
+  border-color: rgba(40, 176, 169, 0.5);
+  outline: none;
+}
+
+/* Fix chrome autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(40, 46, 45, 0.9) inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: white;
+}
+
+.training-form__textarea {
+  min-height: 150px;
+  resize: vertical;
+  height: auto;
+}
+
+.training-form__select option {
+  background-color: rgba(40, 46, 45, 0.95);
+  color: #ffffff;
+  padding: 10px;
+}
+
+.training-form__select:focus {
+  outline: none;
+  border-color: rgba(40, 176, 169, 0.5);
+}
+
+.training-form__select[value=""] {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.training-form__select:not([value=""]) {
+  color: #ffffff;
+}
+
+/* Style the select when an option is selected */
+.training-form__select:not(:invalid) {
+  color: #ffffff;
+}
+
+/* Custom styling for dropdown arrow */
+.training-form__field::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Стили для календаря и времени */
+input[type="date"],
+input[type="time"] {
+  color-scheme: dark;
+  background-image: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.5;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+}
+
+/* Специальные стили для поля date */
+input[type="date"] {
+  position: relative;
+}
+
+input[type="date"]::before {
+  content: attr(placeholder);
+  position: absolute;
+  color: rgba(255, 255, 255, 0.5);
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 100%;
+}
+
+input[type="date"]:focus::before,
+input[type="date"]:valid::before,
+input[type="date"]:not(:placeholder-shown)::before {
+  display: none;
+}
+
+/* Специальные стили для поля time */
+input[type="time"] {
+  position: relative;
+}
+
+input[type="time"]::before {
+  content: attr(placeholder);
+  position: absolute;
+  color: rgba(255, 255, 255, 0.5);
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 100%;
+}
+
+input[type="time"]:focus::before,
+input[type="time"]:valid::before,
+input[type="time"]:not(:placeholder-shown)::before {
+  display: none;
+}
+
+/* Плейсхолдеры для всех полей */
+.training-form__input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.training-form__row--center {
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.training-form__button {
+  padding: 16px 40px;
+  min-width: 200px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 24px rgba(40, 176, 169, 0.2);
+}
+
+.training-form__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(40, 176, 169, 0.3);
+}
+
+.training-form__button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(40, 176, 169, 0.2);
+}
+
+@media (max-width: 768px) {
+  .training-form__content {
+    padding: 40px 20px;
+  }
+
+  .training-form__title {
+    font-size: 32px;
+  }
+
+  .training-form__row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* Предотвращаем сжатие поля при малых экранах */
+  .training-form__input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .training-form {
+    padding: 60px 0;
+  }
+
+  .training-form__title {
+    font-size: 24px;
+  }
+
+  .training-form__subtitle {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .training-form__button {
+    width: 100%;
+  }
+}
+
+/* Force the same background for all form fields */
+.training-form__input,
+.training-form__input.training-form__select {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(181, 181, 181, 0.2) 100%
+  );
+  backdrop-filter: blur(30px);
+}
+
+/* Add select arrow only to select fields */
+.training-form__input.training-form__select {
+  background: transparent;
+  padding-right: 48px;
+  position: relative;
+}
+
+/* IE Edge specific */
+@supports (-ms-ime-align: auto) {
+  .training-form__select {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(181, 181, 181, 0.2) 100%
+    );
+  }
+}
+
+/* Убираем стрелку в IE */
+select.training-form__select::-ms-expand {
+  display: none;
+}
+
+/* Убираем стандартную стрелку в Firefox */
+select.training-form__select {
+  text-indent: 1px;
+  text-overflow: "";
+  -moz-appearance: none !important;
+}
