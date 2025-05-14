@@ -1,0 +1,351 @@
+/* Общие стили анимаций для всех страниц сайта */
+
+/* Анимации для элементов при скролле */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Анимации для заголовков */
+h1.animate-on-scroll,
+h2.animate-on-scroll,
+h3.animate-on-scroll {
+  transform: translateY(20px);
+}
+
+h1.animate-on-scroll.animate-in,
+h2.animate-on-scroll.animate-in,
+h3.animate-on-scroll.animate-in {
+  transform: translateY(0);
+}
+
+/* Анимации для карточек */
+.directions__card.animate-on-scroll,
+.trainers__card.animate-on-scroll,
+.club-card-section__card.animate-on-scroll,
+.benefits__card.animate-on-scroll {
+  transform: translateY(40px);
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.directions__card.animate-in,
+.trainers__card.animate-in,
+.club-card-section__card.animate-in,
+.benefits__card.animate-in {
+  transform: translateY(0);
+}
+
+/* Эффект при наведении на карточки */
+.card-hover {
+  transform: translateY(-10px) !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
+  z-index: 2;
+}
+
+/* Анимации для кнопок */
+.button-hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 20px rgba(40, 176, 169, 0.4) !important;
+}
+
+/* Анимация для появления модальных окон */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Анимация для загрузки */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Анимация пульсации */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Анимация однократной пульсации */
+@keyframes pulseOnce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulse-once {
+  animation: pulseOnce 0.6s ease-in-out;
+}
+
+/* Анимация подсветки активного пункта меню */
+@keyframes activeHighlight {
+  0% {
+    text-shadow: 0 0 0 rgba(50, 221, 212, 0);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(50, 221, 212, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 0 rgba(50, 221, 212, 0);
+  }
+}
+
+.header__menu-link.active.pulse-once {
+  animation: pulseOnce 0.6s ease-in-out, activeHighlight 1.2s ease-in-out;
+}
+
+/* Анимации для форм */
+.form-error-message {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.form-error-message.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-success-message {
+  animation: fadeInUp 0.5s forwards;
+}
+
+.form-success-message.animate-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.input-error {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-3px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(3px, 0, 0);
+  }
+}
+
+/* Анимации для навигации */
+.header__menu-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.header__menu-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #32ddd4, #1a746f);
+  transition: width 0.3s ease;
+}
+
+.header__menu-link:hover::after,
+.header__menu-link.active::after {
+  width: 100%;
+}
+
+/* Стили для активного пункта меню */
+.header__menu-link.active {
+  opacity: 1 !important;
+  font-weight: 500;
+  color: #32ddd4;
+}
+
+.header__menu-item.active {
+  position: relative;
+}
+
+.header__menu-item.active::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #32ddd4;
+  opacity: 0.8;
+}
+
+/* Анимации для социальных иконок */
+.contacts__social-link,
+.footer__social-link {
+  transition: all 0.3s ease;
+}
+
+.contacts__social-link:hover,
+.footer__social-link:hover {
+  transform: translateY(-3px);
+}
+
+/* Анимация для слайдера */
+.swiper-slide {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.swiper-slide-active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.swiper-slide-prev,
+.swiper-slide-next {
+  transform: scale(0.9);
+  opacity: 0.7;
+}
+
+/* Анимация появления для страниц */
+.page-transition {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Анимация для изображений */
+.image-hover {
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+
+.image-hover img {
+  transition: transform 0.5s ease;
+}
+
+.image-hover:hover img {
+  transform: scale(1.05);
+}
+
+/* Медиа-запросы для адаптивности анимаций */
+@media (max-width: 768px) {
+  .animate-on-scroll {
+    transition-duration: 0.6s;
+  }
+
+  .card-hover {
+    transform: translateY(-5px) !important;
+  }
+}
+
+/* Отключение анимаций для пользователей, предпочитающих уменьшенное движение */
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .card-hover,
+  .button-hover {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  @keyframes spin {
+    to {
+      transform: none;
+    }
+  }
+
+  .loading-spinner {
+    animation: none;
+  }
+}

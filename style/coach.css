@@ -1,0 +1,310 @@
+.trainers__card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+.trainers__card-link:hover {
+  color: inherit;
+}
+
+/* Обновляем стили для карточки, чтобы эффект наведения работал на всю карточку */
+.trainers__card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.trainers__card:hover {
+  transform: translateY(-5px);
+}
+
+/* Coach Details Page Styles */
+.coach-details {
+  position: relative;
+  color: #ffffff;
+  min-height: 100vh;
+  background-color: #001615;
+}
+
+.coach-details__background {
+  position: relative;
+  background-image: url("../images/coach-background.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.coach-details__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(0, 22, 21, 0.97) 35%,
+    rgba(0, 22, 21, 0.95) 100%
+  );
+}
+
+.coach-details__circles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.coach-details__circle {
+  position: absolute;
+  border-radius: 50%;
+  background-color: #28b0a9;
+  filter: blur(200px);
+}
+
+.coach-details__circle--1 {
+  width: 400px;
+  height: 400px;
+  top: 10%;
+  right: 5%;
+}
+
+.coach-details__circle--2 {
+  width: 300px;
+  height: 300px;
+  bottom: 15%;
+  left: 5%;
+}
+
+.coach-details__container {
+  position: relative;
+  z-index: 2;
+  padding-top: 14px;
+  padding-bottom: 120px;
+}
+
+.coach-details__breadcrumbs {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.22;
+  margin-bottom: 51px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.coach-details__breadcrumb-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.coach-details__breadcrumb-link:last-of-type {
+  color: #ffffff;
+}
+
+.coach-details__breadcrumb-link:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.coach-details__breadcrumb-link:last-of-type:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.coach-details__content {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 60px;
+}
+
+.coach-details__left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.coach-details__photo {
+  border-radius: 24px;
+  overflow: hidden;
+  height: 400px;
+  width: 340px;
+}
+
+.coach-details__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coach-details__name {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+.coach-details__position {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  opacity: 0.8;
+  margin-bottom: 30px;
+}
+
+.coach-details__block {
+  margin-bottom: 30px;
+}
+
+.coach-details__subtitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.42;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  opacity: 0.8;
+}
+
+.coach-details__text {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.coach-details__tags {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coach-details__tag {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.42;
+  opacity: 0.6;
+}
+
+.coach-details__booking {
+  margin-top: 40px;
+}
+
+.coach-details__booking-content {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 30px;
+  backdrop-filter: blur(30px);
+}
+
+.coach-details__booking-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.42;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 15px;
+  opacity: 0.8;
+}
+
+.coach-details__booking-text {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  margin-bottom: 30px;
+  opacity: 0.8;
+}
+
+.coach-details__booking-button {
+  display: inline-block;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  background: linear-gradient(to bottom, #32ddd4, #1a746f);
+  border-radius: 12px;
+  padding: 15px 30px;
+  text-decoration: none;
+  box-shadow: 0px 11.6px 23.2px 0px rgba(8, 35, 34, 0.56),
+    inset 0px 5.95px 5.95px 0px rgba(54, 236, 227, 1),
+    inset 0px -5.95px 5.95px 0px rgba(23, 101, 97, 1);
+  transition: transform 0.3s ease;
+}
+
+.coach-details__booking-button:hover {
+  transform: translateY(-3px);
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .coach-details__content {
+    grid-template-columns: 340px 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 992px) {
+  .coach-details__content {
+    grid-template-columns: 1fr;
+  }
+
+  .coach-details__left-column {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .coach-details__photo {
+    width: 100%;
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .coach-details__name {
+    font-size: 32px;
+  }
+
+  .coach-details__photo {
+    height: 400px;
+  }
+
+  .coach-details__booking-content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coach-details__container {
+    padding-top: 20px;
+  }
+
+  .coach-details__name {
+    font-size: 28px;
+  }
+
+  .coach-details__photo {
+    height: 400px;
+  }
+
+  .coach-details__tag {
+    font-size: 14px;
+  }
+
+  .coach-details__booking-button {
+    padding: 12px 20px;
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+  }
+}

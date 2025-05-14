@@ -1,0 +1,303 @@
+<?php
+session_start();
+require_once('../database/config.php');
+
+// Проверка доступа (только для администраторов и менеджеров)
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
+// Получение статистики для дашборда
+// Общее количество пользователей
+$stmt = $pdo->query("SELECT COUNT(*) FROM users");
+$totalUsers = $stmt->fetchColumn();
+
+// Новые пользователи за последние 7 дней
+$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)");
+$newUsers = $stmt->fetchColumn();
+
+// Активные абонементы
+$stmt = $pdo->query("SELECT COUNT(*) FROM user_subscriptions WHERE end_date > NOW() OR remaining_sessions > 0");
+$activeSubscriptions = $stmt->fetchColumn();
+
+// Предстоящие тренировки
+$stmt = $pdo->query("SELECT COUNT(*) FROM training_sessions WHERE CONCAT(session_date, ' ', start_time) > NOW()");
+$upcomingSessions = $stmt->fetchColumn();
+
+// Ожидающие отзывы
+$stmt = $pdo->query("SELECT COUNT(*) FROM reviews WHERE is_approved = 0");
+$pendingReviews = $stmt->fetchColumn();
+
+// Тренировки на сегодня
+$stmt = $pdo->query("
+    SELECT 
+        ts.id, ts.session_date, ts.start_time, ts.end_time, 
+        u.first_name as user_first_name, u.last_name as user_last_name,
+        t.first_name as trainer_first_name, t.last_name as trainer_last_name,
+        s.name as service_name
+    FROM training_sessions ts
+    JOIN users u ON ts.user_id = u.id
+    JOIN trainers tr ON ts.trainer_id = tr.id
+    JOIN users t ON tr.user_id = t.id
+    LEFT JOIN services s ON ts.service_id = s.id
+    WHERE ts.session_date = CURRENT_DATE()
+    ORDER BY ts.start_time ASC
+    LIMIT 5
+");
+$todaySessions = $stmt->fetchAll();
+
+// Последние зарегистрированные пользователи
+$stmt = $pdo->query("
+    SELECT id, first_name, last_name, email, phone, created_at
+    FROM users
+    ORDER BY created_at DESC
+    LIMIT 5
+");
+$recentUsers = $stmt->fetchAll();
+
+// Последние отзывы
+$stmt = $pdo->query("
+    SELECT 
+        r.id, r.rating, r.comment, r.created_at, r.is_approved,
+        u.first_name as user_first_name, u.last_name as user_last_name
+    FROM reviews r
+    JOIN users u ON r.user_id = u.id
+    ORDER BY r.created_at DESC
+    LIMIT 5
+");
+$recentReviews = $stmt->fetchAll();
+
+$pageTitle = 'Панель управления';
+include 'includes/header.php';
+?>
+
+<div class="container-fluid">
+    <div class="row">
+        <?php include 'includes/sidebar.php'; ?>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Панель управления</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="statistics.php" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-chart-bar me-1"></i> Перейти к статистике
+                    </a>
+                </div>
+            </div>
+
+            <!-- Информационные карточки -->
+            <div class="row mb-4">
+                <!-- Пользователи -->
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-primary text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-users fa-3x opacity-50"></i>
+                                </div>
+                                <div class="text-end">
+                                    <h5>Пользователи</h5>
+                                    <h3 class="mb-0"><?= number_format($totalUsers) ?></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between bg-primary border-top-0">
+                            <span>Новых за 7 дней: <?= number_format($newUsers) ?></span>
+                            <a href="users.php" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Абонементы -->
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-success text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-id-card fa-3x opacity-50"></i>
+                                </div>
+                                <div class="text-end">
+                                    <h5>Активные абонементы</h5>
+                                    <h3 class="mb-0"><?= number_format($activeSubscriptions) ?></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between bg-success border-top-0">
+                            <span>Подробная информация</span>
+                            <a href="subscriptions.php" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Тренировки -->
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-info text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-calendar-alt fa-3x opacity-50"></i>
+                                </div>
+                                <div class="text-end">
+                                    <h5>Тренировки</h5>
+                                    <h3 class="mb-0"><?= number_format($upcomingSessions) ?></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between bg-info border-top-0">
+                            <span>Предстоящие</span>
+                            <a href="training_sessions.php" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Отзывы -->
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-warning text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-comments fa-3x opacity-50"></i>
+                                </div>
+                                <div class="text-end">
+                                    <h5>Отзывы на модерации</h5>
+                                    <h3 class="mb-0"><?= number_format($pendingReviews) ?></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between bg-warning border-top-0">
+                            <span>Требуют проверки</span>
+                            <a href="reviews.php?status=pending" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Тренировки на сегодня -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-day me-1"></i>
+                            Тренировки на сегодня
+                        </div>
+                        <div class="card-body">
+                            <?php if (empty($todaySessions)): ?>
+                                <p class="text-center text-muted">На сегодня нет запланированных тренировок</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Время</th>
+                                                <th>Клиент</th>
+                                                <th>Тренер</th>
+                                                <th>Услуга</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($todaySessions as $session): ?>
+                                            <tr>
+                                                <td><?= date('H:i', strtotime($session['start_time'])) ?> - <?= date('H:i', strtotime($session['end_time'])) ?></td>
+                                                <td><?= htmlspecialchars(($session['user_first_name'] ?? '') . ' ' . ($session['user_last_name'] ?? '')) ?></td>
+                                                <td><?= htmlspecialchars(($session['trainer_first_name'] ?? '') . ' ' . ($session['trainer_last_name'] ?? '')) ?></td>
+                                                <td><?= htmlspecialchars($session['service_name'] ?? 'Общая тренировка') ?></td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                            <div class="text-end mt-2">
+                                <a href="training_sessions.php" class="btn btn-sm btn-primary">Все тренировки</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Последние зарегистрированные пользователи -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-user-plus me-1"></i>
+                            Новые пользователи
+                        </div>
+                        <div class="card-body">
+                            <?php if (empty($recentUsers)): ?>
+                                <p class="text-center text-muted">Пока нет зарегистрированных пользователей</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Имя</th>
+                                                <th>Email</th>
+                                                <th>Телефон</th>
+                                                <th>Дата</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($recentUsers as $user): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?></td>
+                                                <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($user['phone'] ?? '') ?></td>
+                                                <td><?= date('d.m.Y', strtotime($user['created_at'])) ?></td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                            <div class="text-end mt-2">
+                                <a href="users.php" class="btn btn-sm btn-primary">Все пользователи</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Последние отзывы -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-comment-dots me-1"></i>
+                            Последние отзывы
+                        </div>
+                        <div class="card-body">
+                            <?php if (empty($recentReviews)): ?>
+                                <p class="text-center text-muted">Пока нет отзывов</p>
+                            <?php else: ?>
+                                <div class="list-group">
+                                    <?php foreach ($recentReviews as $review): ?>
+                                    <div class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1"><?= htmlspecialchars(($review['user_first_name'] ?? '') . ' ' . ($review['user_last_name'] ?? '')) ?></h6>
+                                            <small class="text-muted"><?= date('d.m.Y H:i', strtotime($review['created_at'])) ?></small>
+                                        </div>
+                                        <div class="mb-1">
+                                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                <i class="fas fa-star <?= $i <= ($review['rating'] ?? 0) ? 'text-warning' : 'text-secondary' ?>"></i>
+                                            <?php endfor; ?>
+                                            <span class="badge <?= ($review['is_approved'] ?? false) ? 'bg-success' : 'bg-warning text-dark' ?> ms-2">
+                                                <?= ($review['is_approved'] ?? false) ? 'Одобрен' : 'На модерации' ?>
+                                            </span>
+                                        </div>
+                                        <p class="mb-1"><?= htmlspecialchars($review['comment'] ?? '') ?></p>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                            <div class="text-end mt-2">
+                                <a href="reviews.php" class="btn btn-sm btn-primary">Все отзывы</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<?php include 'includes/footer.php'; ?> 

@@ -1,0 +1,191 @@
+/* Services Page Styles */
+.services {
+  position: relative;
+}
+
+.services-hero {
+  position: relative;
+  background: linear-gradient(180deg, #00100f 0%, rgba(0, 18, 17, 0.95) 100%);
+  overflow: hidden;
+  min-height: calc(100vh - 120px);
+}
+
+/* Background text styling */
+.services-background-text {
+  position: absolute;
+  top: 0;
+  left: -20%;
+  width: 140%;
+  height: 100%;
+  font-family: "Dela Gothic One", cursive;
+  font-size: 40px;
+  line-height: 1.45;
+  color: #ffffff;
+  opacity: 0.02;
+  overflow: visible;
+  z-index: 1;
+  user-select: none;
+  pointer-events: none;
+  white-space: normal;
+  letter-spacing: 1px;
+  word-break: break-word;
+  word-spacing: 10px;
+}
+
+/* Background decorative elements */
+.services-hero:before,
+.services-hero:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background-color: #28b0a9;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.services-hero:before {
+  width: 400px;
+  height: 400px;
+  top: 20%;
+  right: -100px;
+  filter: blur(150px);
+}
+
+.services-hero:after {
+  width: 500px;
+  height: 500px;
+  bottom: -150px;
+  left: -100px;
+  filter: blur(180px);
+}
+
+/* Container styles */
+.services-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation buttons */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  padding-top: 14px;
+}
+
+.nav-button {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.22;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-button:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-button-active {
+  color: rgba(255, 255, 255);
+  cursor: default;
+}
+
+.nav-divider {
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+}
+
+/* Content styles */
+.services-content {
+  max-width: 600px;
+  margin-top: 100px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.services-title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 54px;
+  line-height: 140%;
+  color: #ffffff;
+  margin-bottom: 14px;
+}
+
+.services-description {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 30px;
+  max-width: 555px;
+}
+
+/* Button styles */
+.services-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 40px;
+  background: linear-gradient(to bottom, #32ddd4, #1a746f);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 11.6px 23.2px 0 rgba(8, 35, 34, 0.56),
+    inset 0 6px 6px 0 rgba(54, 236, 227, 1),
+    inset 0 -6px 6px 0 rgba(23, 101, 97, 1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.services-button:hover {
+  transform: translateY(-2px);
+}
+
+.services-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 15px 0 rgba(8, 35, 34, 0.56),
+    inset 0 4px 4px 0 rgba(54, 236, 227, 1),
+    inset 0 -4px 4px 0 rgba(23, 101, 97, 1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .services-title {
+    font-size: 42px;
+  }
+
+  .services-content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .services {
+    padding: 40px 0;
+  }
+
+  .services-title {
+    font-size: 36px;
+  }
+
+  .services-description {
+    font-size: 14px;
+  }
+
+  .services-button {
+    padding: 14px 30px;
+    font-size: 14px;
+  }
+}

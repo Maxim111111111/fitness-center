@@ -1,0 +1,255 @@
+/* Стили для модального окна отзыва */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: none;
+  backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+  display: block;
+}
+
+.review-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 40px;
+  width: 90%;
+  max-width: 600px;
+  z-index: 1001;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.review-modal.active {
+  display: block;
+}
+
+.review-modal__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.review-modal__close:hover {
+  opacity: 1;
+}
+
+.review-modal__close::before,
+.review-modal__close::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+}
+
+.review-modal__close::before {
+  transform: rotate(45deg);
+}
+
+.review-modal__close::after {
+  transform: rotate(-45deg);
+}
+
+.review-form__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 32px;
+  line-height: 140%;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.review-form__subtitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0.8;
+  margin-bottom: 30px;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-form__row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.review-form__field {
+  flex: 1;
+  position: relative;
+}
+
+.review-form__input {
+  width: 100%;
+  padding: 16px 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(181, 181, 181, 0.2) 100%
+  );
+  backdrop-filter: blur(30px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  height: 56px;
+}
+
+.review-form__input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.review-form__input:focus {
+  outline: none;
+  border-color: rgba(40, 176, 169, 0.5);
+  box-shadow: 0 0 5px rgba(40, 176, 169, 0.3);
+}
+
+.review-form__textarea {
+  min-height: 150px;
+  resize: vertical;
+  height: auto;
+}
+
+.review-form__row--center {
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.review-form__button {
+  padding: 16px 40px;
+  min-width: 200px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 24px rgba(40, 176, 169, 0.2);
+  transition: all 0.3s ease;
+}
+
+.review-form__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(40, 176, 169, 0.3);
+}
+
+.review-form__button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(40, 176, 169, 0.2);
+}
+
+/* Стили для рейтинга */
+.review-form__rating {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-form__rating-label {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 5px;
+}
+
+.rating-star {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background-image: url("../assets/svg/star-empty.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.2s;
+}
+
+.rating-star:hover {
+  transform: scale(1.1);
+}
+
+.rating-star.active {
+  background-image: url("../assets/svg/star-filled.svg");
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .review-modal {
+    padding: 30px 20px;
+  }
+
+  .review-form__title {
+    font-size: 24px;
+  }
+
+  .review-form__subtitle {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .review-form__row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-modal {
+    padding: 25px 15px;
+  }
+
+  .review-form__title {
+    font-size: 22px;
+  }
+
+  .review-form__button {
+    width: 100%;
+  }
+
+  .rating-star {
+    width: 25px;
+    height: 25px;
+  }
+}

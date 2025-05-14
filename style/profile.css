@@ -1,0 +1,794 @@
+/* Стили для страницы личного кабинета */
+.profile-page {
+  min-height: calc(100vh - 120px);
+  padding: 80px 0;
+  background-color: #00100f;
+  position: relative;
+}
+
+.profile-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../assets/img/bg-pattern.png") repeat;
+  opacity: 0.05;
+  z-index: 1;
+}
+
+.profile-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 30px;
+}
+
+.profile-sidebar {
+  flex: 0 0 280px;
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 30px;
+  height: fit-content;
+  position: sticky;
+  top: 120px;
+}
+
+.profile-user {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-avatar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(40, 176, 169, 0.5);
+}
+
+.profile-avatar-edit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-avatar-edit:hover {
+  transform: scale(1.1);
+}
+
+.profile-avatar-edit img {
+  width: 16px;
+  height: 16px;
+  border: none;
+}
+
+.profile-user-name {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.profile-user-membership {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #32ddd4;
+}
+
+.profile-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.profile-nav-item {
+  list-style: none;
+}
+
+.profile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+.profile-nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.profile-nav-item.active .profile-nav-link {
+  background: rgba(40, 176, 169, 0.1);
+  color: #32ddd4;
+}
+
+.profile-nav-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+}
+
+.profile-nav-item.active .profile-nav-icon,
+.profile-nav-link:hover .profile-nav-icon {
+  opacity: 1;
+}
+
+.profile-nav-logout {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-link {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.logout-link:hover {
+  color: #ff5555;
+  background: rgba(255, 85, 85, 0.1);
+}
+
+.profile-content {
+  flex: 1;
+}
+
+.profile-tab {
+  display: none;
+}
+
+.profile-tab.active {
+  display: block;
+}
+
+.profile-header {
+  margin-bottom: 30px;
+}
+
+.profile-title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 32px;
+  line-height: 1.2;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.profile-subtitle {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-section {
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.profile-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.profile-section-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.profile-section-edit,
+.profile-section-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #32ddd4;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.profile-section-edit:hover,
+.profile-section-add:hover {
+  opacity: 0.8;
+}
+
+.profile-section-edit img,
+.profile-section-add img {
+  width: 16px;
+  height: 16px;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.profile-form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-form-label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-form-input,
+.profile-form-select {
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.profile-form-input:not([disabled]),
+.profile-form-select:not([disabled]) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.profile-form-input:focus,
+.profile-form-select:focus {
+  outline: none;
+  border-color: rgba(40, 176, 169, 0.5);
+  background: rgba(40, 176, 169, 0.05);
+}
+
+.profile-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.profile-form-submit,
+.profile-form-cancel {
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-form-submit {
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  color: #ffffff;
+  border: none;
+}
+
+.profile-form-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-form-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 176, 169, 0.3);
+}
+
+.profile-form-cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Стили для вкладки тренировок */
+.training-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.training-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.training-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.training-card.past {
+  opacity: 0.7;
+}
+
+.training-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.training-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(40, 176, 169, 0.1);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.training-day {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #32ddd4;
+}
+
+.training-month {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.training-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.training-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.training-time,
+.training-coach {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.training-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.training-cancel {
+  padding: 8px 15px;
+  background: rgba(255, 85, 85, 0.1);
+  border: 1px solid rgba(255, 85, 85, 0.3);
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #ff5555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.training-cancel:hover {
+  background: rgba(255, 85, 85, 0.2);
+}
+
+.training-status {
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.training-status.completed {
+  background: rgba(40, 176, 169, 0.1);
+  color: #32ddd4;
+}
+
+/* Стили для вкладки абонемента */
+.subscription-card {
+  background: linear-gradient(
+    180deg,
+    rgba(40, 176, 169, 0.1) 0%,
+    rgba(0, 16, 15, 0.1) 100%
+  );
+  border: 1px solid rgba(40, 176, 169, 0.2);
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.subscription-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: #32ddd4;
+}
+
+.subscription-status {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.subscription-status.active {
+  background: rgba(40, 176, 169, 0.2);
+  color: #32ddd4;
+}
+
+.subscription-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.subscription-info {
+  flex: 1;
+  min-width: 150px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.subscription-label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 5px;
+}
+
+.subscription-value {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.subscription-features {
+  margin-bottom: 25px;
+}
+
+.subscription-features-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.subscription-features-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.subscription-feature-item {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+}
+
+.subscription-feature-item::before {
+  content: "✓";
+  display: inline-block;
+  margin-right: 8px;
+  color: #32ddd4;
+  font-weight: bold;
+}
+
+.subscription-actions {
+  text-align: center;
+}
+
+.subscription-renew {
+  padding: 12px 25px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subscription-renew:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 176, 169, 0.3);
+}
+
+.subscription-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subscription-history-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.subscription-history-date {
+  flex: 0 0 100px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.subscription-history-name {
+  flex: 1;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.subscription-history-period {
+  flex: 0 0 100px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.subscription-history-price {
+  flex: 0 0 100px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #32ddd4;
+  text-align: right;
+}
+
+/* Стили для вкладки настроек */
+.password-field {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.password-toggle:hover {
+  opacity: 0.8;
+}
+
+.password-toggle img {
+  width: 20px;
+  height: 20px;
+}
+
+.profile-notification-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.notification-info {
+  flex: 1;
+}
+
+.notification-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.notification-desc {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Переключатель для настроек */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #32ddd4;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #32ddd4;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 992px) {
+  .profile-container {
+    flex-direction: column;
+  }
+
+  .profile-sidebar {
+    flex: none;
+    width: 100%;
+    position: static;
+  }
+
+  .profile-form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 60px 0;
+  }
+
+  .profile-section {
+    padding: 20px;
+  }
+
+  .subscription-features-list {
+    grid-template-columns: 1fr;
+  }
+
+  .subscription-history-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .subscription-history-date,
+  .subscription-history-period,
+  .subscription-history-price {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-title {
+    font-size: 24px;
+  }
+
+  .profile-section-title {
+    font-size: 18px;
+  }
+
+  .training-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .training-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .training-actions {
+    width: 100%;
+  }
+
+  .training-cancel,
+  .training-status {
+    width: 100%;
+    text-align: center;
+  }
+}

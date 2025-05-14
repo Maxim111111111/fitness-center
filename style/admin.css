@@ -1,0 +1,229 @@
+/* Admin Panel Styles */
+:root {
+  --sidebar-width: 250px;
+  --primary-color: #00100f;
+  --secondary-color: #004643;
+  --accent-color: #32ddd4;
+  --accent-gradient: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  --light-bg: #000908;
+  --text-color: #ffffff;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--primary-color);
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  color: var(--text-color);
+  padding: 20px 0;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar h3 {
+  padding: 0 20px;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  font-family: "Dela Gothic One", cursive;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  padding: 0;
+}
+
+.sidebar nav ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-family: "Montserrat", sans-serif;
+  opacity: 0.8;
+}
+
+.sidebar nav ul li a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.sidebar nav ul li a.active {
+  background: rgba(40, 176, 169, 0.1);
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+/* Main Content Styles */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 30px;
+}
+
+.welcome-section {
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  padding: 30px;
+  border-radius: 24px;
+  margin-bottom: 30px;
+}
+
+.welcome-section h2 {
+  color: var(--text-color);
+  font-family: "Dela Gothic One", cursive;
+  margin-bottom: 15px;
+}
+
+.welcome-section p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Stats Cards */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  border-radius: 24px;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card h4 {
+  color: var(--text-color);
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Forms and Tables */
+.admin-form {
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  padding: 30px;
+  border-radius: 24px;
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-color);
+  padding: 12px 15px;
+  font-family: "Montserrat", sans-serif;
+  width: 100%;
+}
+
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.admin-form label {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.admin-table {
+  width: 100%;
+  background: rgba(0, 16, 15, 0.95);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.admin-table th {
+  background: var(--secondary-color);
+  color: var(--text-color);
+  padding: 15px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  text-align: left;
+}
+
+.admin-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-family: "Montserrat", sans-serif;
+}
+
+.btn {
+  font-family: "Montserrat", sans-serif;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--accent-gradient);
+  color: var(--text-color);
+  border: none;
+  box-shadow: 0 4px 24px rgba(40, 176, 169, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(40, 176, 169, 0.3);
+}
+
+.btn-danger {
+  background: linear-gradient(180deg, #ff5555 0%, #cc4444 100%);
+  color: var(--text-color);
+  border: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    transform: translateX(-100%);
+    transition: all 0.3s ease;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar.active {
+    width: var(--sidebar-width);
+    transform: translateX(0);
+  }
+}
