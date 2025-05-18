@@ -22,6 +22,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Проверяем, находимся ли мы на странице профиля
+  if (currentPath.endsWith("profile.php")) {
+    const profileLink = document.querySelector(".header__profile-link");
+    if (profileLink) {
+      profileLink.classList.add("active");
+    }
+  }
+
   // Анимация для активного пункта меню
   const activeLink = document.querySelector(".header__menu-link.active");
   if (activeLink) {

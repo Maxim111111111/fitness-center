@@ -437,6 +437,44 @@
   color: #32ddd4;
 }
 
+/* Стили для пустого списка тренировок */
+.training-empty {
+  padding: 40px 30px;
+  text-align: center;
+  background-color: rgba(0, 22, 21, 0.03);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.training-empty p {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: rgba(0, 22, 21, 0.7);
+  margin-bottom: 20px;
+}
+
+.training-empty-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(to bottom, #32ddd4, #1a746f);
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 6px 12px rgba(8, 35, 34, 0.3),
+    inset 0 4px 4px rgba(54, 236, 227, 0.5),
+    inset 0 -4px 4px rgba(23, 101, 97, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.training-empty-button:hover {
+  transform: translateY(-2px);
+}
+
 /* Стили для вкладки абонемента */
 .subscription-card {
   background: linear-gradient(
@@ -791,4 +829,37 @@ input:checked + .slider:before {
     width: 100%;
     text-align: center;
   }
+}
+
+/* Стили для уведомлений */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification.success {
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-left: 4px solid #32ddd4;
+}
+
+.notification.error {
+  background: linear-gradient(180deg, #ff4d4d 0%, #c43535 100%);
+  border-left: 4px solid #ff4d4d;
 }

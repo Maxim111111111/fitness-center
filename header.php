@@ -1,5 +1,19 @@
+<?php
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Include config for isLoggedIn function if not already included
+if (!function_exists('isLoggedIn')) {
+    require_once('database/config.php');
+}
+
+// Get user details if logged in
+$userName = $_SESSION['user_name'] ?? 'Пользователь';
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <link
@@ -20,6 +34,8 @@
       src="https://api-maps.yandex.ru/2.1/?apikey=ваш_API_ключ&lang=ru_RU"
       type="text/javascript"
     ></script>
+    <!-- Подключаем auth.js в header для предотвращения конфликтов -->
+    <script src="js/auth.js"></script>
   </head>
   <body class="page-transition">
     <header>
@@ -76,7 +92,7 @@
                 </li>
                 <li class="header__menu-item">
                   <a href="./training_session.php" class="header__menu-link"
-                    >Запись на тренеровку</a
+                    >Запись на тренировку</a
                   >
                 </li>
                 <li class="header__menu-item">
@@ -88,22 +104,45 @@
               </ul>
             </div>
             <div class="header__auth">
-              <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
-                <a href="./profile.php" class="header__profile-link">
-                  <img src="assets/svg/user-menu.svg" alt="Профиль" class="header__auth-icon">
-                </a>
+              <?php if (isLoggedIn()): ?>
+                <div class="header__auth-trigger">
+                  <img src="assets/svg/user-menu.svg" alt="Профиль" class="header__auth-icon" id="authIcon">
+                  <div class="header__auth-dropdown" id="authDropdown">
+                    <div class="header__auth-menu">
+                      <div class="header__auth-user">
+                        <div class="header__auth-avatar">
+                          <img src="assets/img/avatar-placeholder.svg" alt="Аватар" class="header__auth-avatar-img">
+                        </div>
+                        <div class="header__auth-info">
+                          <span class="header__auth-name"><?php echo htmlspecialchars($userName); ?></span>
+                          <span class="header__auth-email"><?php echo htmlspecialchars($_SESSION['user_email'] ?? ''); ?></span>
+                        </div>
+                      </div>
+                      <a href="./profile.php" class="header__auth-link">
+                        <img src="assets/svg/user.svg" alt="Личный кабинет" class="header__auth-link-icon">
+                        Личный кабинет
+                      </a>
+                      <a href="./profile.php?logout=1" class="header__auth-link header__auth-link--logout">
+                        <img src="assets/svg/logout.svg" alt="Выход" class="header__auth-link-icon">
+                        Выйти
+                      </a>
+                    </div>
+                  </div>
+                </div>
               <?php else: ?>
-                <img src="assets/svg/user-menu.svg" alt="Профиль" class="header__auth-icon" id="authIcon">
-                <div class="header__auth-dropdown" id="authDropdown">
-                  <div class="header__auth-menu">
-                    <a href="./login.php" class="header__auth-link">
-                      <img src="assets/svg/user.svg" alt="Вход" class="header__auth-link-icon">
-                      Вход
-                    </a>
-                    <a href="./register.php" class="header__auth-link header__auth-link--accent">
-                      <img src="assets/svg/user-plus.svg" alt="Регистрация" class="header__auth-link-icon">
-                      Регистрация
-                    </a>
+                <div class="header__auth-trigger">
+                  <img src="assets/svg/user-menu.svg" alt="Профиль" class="header__auth-icon" id="authIcon">
+                  <div class="header__auth-dropdown" id="authDropdown">
+                    <div class="header__auth-menu">
+                      <a href="./login.php" class="header__auth-link">
+                        <img src="assets/svg/user.svg" alt="Вход" class="header__auth-link-icon">
+                        Вход
+                      </a>
+                      <a href="./register.php" class="header__auth-link header__auth-link--accent">
+                        <img src="assets/svg/user-plus.svg" alt="Регистрация" class="header__auth-link-icon">
+                        Регистрация
+                      </a>
+                    </div>
                   </div>
                 </div>
               <?php endif; ?>
@@ -111,7 +150,6 @@
           </div>
         </div>
       </div>
-    </header> 
-    <script src="js/auth.js"></script>
+    </header>
     <script src="js/animations.js"></script>
     <script src="js/active-menu.js"></script> 

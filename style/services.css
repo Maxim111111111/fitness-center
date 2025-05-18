@@ -189,3 +189,197 @@
     font-size: 14px;
   }
 }
+
+/* Training form styles */
+.training-form {
+  position: relative;
+  padding: 80px 0;
+  background-color: #001615;
+  z-index: 1;
+}
+
+.training-form__wrapper {
+  position: relative;
+  background: rgba(0, 22, 21, 0.7);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.training-form__content {
+  padding: 40px;
+}
+
+.training-form__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 32px;
+  line-height: 140%;
+  color: #ffffff;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.training-form__subtitle {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.training-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.training-form__row {
+  display: flex;
+  gap: 20px;
+}
+
+.training-form__field {
+  flex: 1;
+  position: relative;
+}
+
+.training-form__input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.training-form__input:focus {
+  outline: none;
+  border-color: rgba(40, 176, 169, 0.5);
+  background: rgba(40, 176, 169, 0.05);
+}
+
+.training-form__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.training-form__input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.training-form__select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background-image: url("../assets/svg/chevron-down.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+.training-form__textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.training-form__row--center {
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.training-form__button {
+  padding: 16px 40px;
+  background: linear-gradient(to bottom, #32ddd4, #1a746f);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 11.6px 23.2px 0 rgba(8, 35, 34, 0.56),
+    inset 0 6px 6px 0 rgba(54, 236, 227, 1),
+    inset 0 -6px 6px 0 rgba(23, 101, 97, 1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.training-form__button:hover {
+  transform: translateY(-2px);
+}
+
+.training-form__button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 15px 0 rgba(8, 35, 34, 0.56),
+    inset 0 4px 4px 0 rgba(54, 236, 227, 1),
+    inset 0 -4px 4px 0 rgba(23, 101, 97, 1);
+}
+
+.training-form__button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Success message styles */
+.training-form__success {
+  text-align: center;
+  padding: 60px 40px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .training-form {
+    padding: 60px 0;
+  }
+
+  .training-form__content {
+    padding: 30px;
+  }
+
+  .training-form__title {
+    font-size: 28px;
+  }
+
+  .training-form__row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .training-form {
+    padding: 40px 0;
+  }
+
+  .training-form__content {
+    padding: 25px 20px;
+  }
+
+  .training-form__title {
+    font-size: 24px;
+  }
+
+  .training-form__button {
+    width: 100%;
+  }
+}

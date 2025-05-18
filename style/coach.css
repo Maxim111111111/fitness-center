@@ -308,3 +308,207 @@
     text-align: center;
   }
 }
+
+/* Styles for notifications */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  width: 340px;
+  padding: 16px;
+  background: rgba(0, 22, 21, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.notification-icon {
+  flex: 0 0 24px;
+  height: 24px;
+  margin-right: 16px;
+}
+
+.notification-success .notification-icon {
+  color: #32ddd4;
+}
+
+.notification-error .notification-icon {
+  color: #ff5555;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-message {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.notification-close {
+  flex: 0 0 14px;
+  height: 14px;
+  margin-left: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.notification-close:hover {
+  color: #ffffff;
+}
+
+/* Success message after form submission */
+.training-form__success {
+  text-align: center;
+  padding: 40px;
+  background: rgba(40, 176, 169, 0.1);
+  border-radius: 24px;
+  border: 1px solid rgba(40, 176, 169, 0.3);
+}
+
+.training-form__booking-id {
+  margin: 30px 0;
+  padding: 16px;
+  background: rgba(40, 176, 169, 0.2);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #32ddd4;
+}
+
+.training-form__home-button {
+  display: inline-block;
+  padding: 16px 40px;
+  background: linear-gradient(to bottom, #32ddd4, #1a746f);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 11.6px 23.2px 0 rgba(8, 35, 34, 0.56),
+    inset 0 6px 6px 0 rgba(54, 236, 227, 1),
+    inset 0 -6px 6px 0 rgba(23, 101, 97, 1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.training-form__home-button:hover {
+  transform: translateY(-2px);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Стили для select элементов */
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #333;
+  pointer-events: none;
+}
+
+.training-form__select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px !important;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.training-form__select::-ms-expand {
+  display: none;
+}
+
+/* Стили для disabled состояния */
+.training-form__select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.select-wrapper:has(.training-form__select:disabled)::after {
+  opacity: 0.5;
+}
+
+/* Стили для блока с требованием авторизации */
+.training-form__login-required {
+  background: rgba(0, 22, 21, 0.05);
+  border-radius: 24px;
+  padding: 60px 30px;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.training-form__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.training-form__link {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #32ddd4;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.training-form__link:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .training-form__login-required {
+    padding: 40px 20px;
+  }
+}

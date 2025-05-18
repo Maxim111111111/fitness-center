@@ -5,11 +5,12 @@ define('DB_NAME', 'fitness_center');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
 define('DB_CHARSET', 'utf8mb4');
+define('DB_SOCKET', '/Applications/MAMP/tmp/mysql/mysql.sock');
 
 try {
     // Create PDO instance
     $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET,
+        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET . ";unix_socket=" . DB_SOCKET,
         DB_USER,
         DB_PASS,
         [
@@ -23,18 +24,19 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Function to sanitize input
-function sanitize($input) {
-    if (is_array($input)) {
-        foreach($input as $key => $value) {
-            $input[$key] = sanitize($value);
+// Функция для очистки входных данных
+if (!function_exists('sanitize')) {
+    function sanitize($input) {
+        if (is_array($input)) {
+            foreach ($input as $key => $value) {
+                $input[$key] = sanitize($value);
+            }
+            return $input;
         }
-    } else {
-        $input = trim($input);
-        $input = stripslashes($input);
-        $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        
+        // Удаляем лишние пробелы и экранируем специальные символы
+        return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
     }
-    return $input;
 }
 
 // Function to validate email
@@ -54,7 +56,7 @@ function generateRandomString($length = 10) {
 
 // Function to check if user is logged in
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION['user_id']) && isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 }
 
 // Function to check if user has specific role

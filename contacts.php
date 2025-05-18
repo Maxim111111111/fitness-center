@@ -261,7 +261,6 @@
     
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="js/auth.js"></script>
     <script src="js/contacts.js"></script>
     <script>
       // Smooth scroll for anchor links

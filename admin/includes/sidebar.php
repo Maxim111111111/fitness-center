@@ -1,77 +1,117 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-    <div class="position-sticky pt-3">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Панель управления' ? 'active' : '' ?>" href="index.php">
-                    <i class="fas fa-tachometer-alt me-2"></i>
-                    Главная
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Пользователи' ? 'active' : '' ?>" href="users.php">
-                    <i class="fas fa-users me-2"></i>
-                    Пользователи
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Тренеры' ? 'active' : '' ?>" href="trainers.php">
-                    <i class="fas fa-user-tie me-2"></i>
-                    Тренеры
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Услуги' ? 'active' : '' ?>" href="services.php">
-                    <i class="fas fa-dumbbell me-2"></i>
-                    Услуги
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Записи на тренировки' ? 'active' : '' ?>" href="training_sessions.php">
-                    <i class="fas fa-calendar-alt me-2"></i>
-                    Записи на тренировки
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Отзывы' ? 'active' : '' ?>" href="reviews.php">
-                    <i class="fas fa-comments me-2"></i>
-                    Отзывы
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Абонементы' ? 'active' : '' ?>" href="subscriptions.php">
-                    <i class="fas fa-id-card me-2"></i>
-                    Абонементы
-                </a>
-            </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>Настройки</span>
-            <a class="link-secondary" href="#" aria-label="Добавить новую настройку">
-                <i class="fas fa-plus-circle"></i>
-            </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Общие настройки' ? 'active' : '' ?>" href="settings.php">
-                    <i class="fas fa-cog me-2"></i>
-                    Общие настройки
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Статистика' ? 'active' : '' ?>" href="statistics.php">
-                    <i class="fas fa-chart-bar me-2"></i>
-                    Статистика
-                </a>
-            </li>
-            <?php if ($_SESSION['role'] === 'admin') : ?>
-            <li class="nav-item">
-                <a class="nav-link <?= $pageTitle === 'Управление правами' ? 'active' : '' ?>" href="permissions.php">
-                    <i class="fas fa-lock me-2"></i>
-                    Управление правами
-                </a>
-            </li>
-            <?php endif; ?>
-        </ul>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="d-flex align-items-center justify-content-center mb-3 px-3">
+        
     </div>
-</nav> 
+    
+    <div class="px-3 mb-3">
+        <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--border-color);">
+                    <i class="fas fa-user text-accent"></i>
+                </div>
+            </div>
+            <div class="flex-grow-1 ms-2">
+                <h6 class="mb-0 fs-6"><?= htmlspecialchars(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? '')) ?></h6>
+                <span class="text-muted small"><?= $_SESSION['role'] === 'admin' ? 'Администратор' : 'Менеджер' ?></span>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li>
+                <a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : '' ?>">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Панель управления</span>
+                </a>
+            </li>
+            <li>
+                <a href="users.php" class="<?= basename($_SERVER['PHP_SELF']) === 'users.php' ? 'active' : '' ?>">
+                    <i class="fas fa-users"></i>
+                    <span>Пользователи</span>
+                </a>
+            </li>
+            <li>
+                <a href="trainers.php" class="<?= basename($_SERVER['PHP_SELF']) === 'trainers.php' ? 'active' : '' ?>">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Тренеры</span>
+                </a>
+            </li>
+            <li>
+                <a href="services.php" class="<?= basename($_SERVER['PHP_SELF']) === 'services.php' ? 'active' : '' ?>">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Услуги</span>
+                </a>
+            </li>
+            <li>
+                <a href="subscriptions.php" class="<?= basename($_SERVER['PHP_SELF']) === 'subscriptions.php' ? 'active' : '' ?>">
+                    <i class="fas fa-id-card"></i>
+                    <span>Абонементы</span>
+                </a>
+            </li>
+            <li>
+                <a href="schedule.php" class="<?= basename($_SERVER['PHP_SELF']) === 'schedule.php' ? 'active' : '' ?>">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Расписание</span>
+                </a>
+            </li>
+            <li>
+                <a href="training_sessions.php" class="<?= basename($_SERVER['PHP_SELF']) === 'training_sessions.php' ? 'active' : '' ?>">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Тренировки</span>
+                </a>
+            </li>
+            <li>
+                <a href="reviews.php" class="<?= basename($_SERVER['PHP_SELF']) === 'reviews.php' ? 'active' : '' ?>">
+                    <i class="fas fa-star"></i>
+                    <span>Отзывы</span>
+                </a>
+            </li>
+            <li>
+                <a href="statistics.php" class="<?= basename($_SERVER['PHP_SELF']) === 'statistics.php' ? 'active' : '' ?>">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Статистика</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.php" class="<?= basename($_SERVER['PHP_SELF']) === 'settings.php' ? 'active' : '' ?>">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="mt-auto p-2">
+        <div class="sidebar-footer text-center">
+            <small class="text-muted d-block mb-1">© <?= date('Y') ?> Moreon Fitness</small>
+        </div>
+    </div>
+</div>
+<!-- End Sidebar -->
+
+<!-- JavaScript для работы бокового меню на мобильных устройствах -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+        });
+    }
+    
+    // Закрывать меню при клике вне его на мобильных устройствах
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth < 768 && 
+            !sidebar.contains(event.target) && 
+            event.target !== sidebarToggle && 
+            !sidebarToggle.contains(event.target) &&
+            sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+        }
+    });
+});
+</script> 

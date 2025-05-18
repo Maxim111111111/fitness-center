@@ -1,3 +1,122 @@
+<?php
+// Start the session
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
+    // Redirect to login page
+    header("Location: login.php");
+    exit();
+}
+
+// Включаем файл с функциями работы с БД
+require_once('database/config.php');
+
+// Обработка выхода из системы
+if (isset($_GET['logout'])) {
+    // Уничтожаем сессию
+    session_destroy();
+    
+    // Перенаправляем на главную страницу
+    header("Location: index.php");
+    exit();
+}
+
+// Получаем данные пользователя
+$userId = $_SESSION['user_id'];
+$userData = null;
+
+try {
+    // Получение основных данных пользователя
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$userId]);
+    $userData = $stmt->fetch();
+} catch (PDOException $e) {
+    // В случае ошибки, просто продолжаем, будем использовать значения по умолчанию
+    error_log("Error fetching user data: " . $e->getMessage());
+}
+
+// Для полей, которые могут быть NULL, устанавливаем значения по умолчанию
+$firstName = $userData['first_name'] ?? 'Пользователь';
+$lastName = $userData['last_name'] ?? '';
+$email = $userData['email'] ?? '';
+$phone = $userData['phone'] ?? '';
+$birthDate = $userData['birthdate'] ?? '';
+$gender = $userData['gender'] ?? 'male';
+$height = $userData['height'] ?? '';
+$weight = $userData['weight'] ?? '';
+$profileImage = $userData['avatar_url'] ?? 'assets/img/avatar-placeholder.svg';
+
+// Получаем предстоящие тренировки пользователя
+$upcomingTrainings = [];
+try {
+    $stmt = $pdo->prepare("
+        SELECT ts.*, t.id as trainer_id, CONCAT(u.first_name, ' ', u.last_name) as trainer_name, 
+        s.name as service_name, s.duration
+        FROM training_sessions ts 
+        LEFT JOIN trainers t ON ts.trainer_id = t.id
+        LEFT JOIN users u ON t.user_id = u.id
+        LEFT JOIN services s ON ts.service_id = s.id
+        WHERE ts.user_id = ? AND ts.session_date >= CURDATE() 
+        AND ts.status IN ('pending', 'confirmed')
+        ORDER BY ts.session_date ASC, ts.start_time ASC
+    ");
+    $stmt->execute([$userId]);
+    $upcomingTrainings = $stmt->fetchAll();
+} catch (PDOException $e) {
+    error_log("Error fetching upcoming trainings: " . $e->getMessage());
+}
+
+// Получаем историю тренировок пользователя
+$pastTrainings = [];
+try {
+    $stmt = $pdo->prepare("
+        SELECT ts.*, t.id as trainer_id, CONCAT(u.first_name, ' ', u.last_name) as trainer_name, 
+        s.name as service_name, s.duration
+        FROM training_sessions ts 
+        LEFT JOIN trainers t ON ts.trainer_id = t.id
+        LEFT JOIN users u ON t.user_id = u.id
+        LEFT JOIN services s ON ts.service_id = s.id
+        WHERE ts.user_id = ? AND (ts.session_date < CURDATE() OR 
+        (ts.session_date = CURDATE() AND ts.end_time < CURTIME()) OR
+        ts.status = 'completed')
+        ORDER BY ts.session_date DESC, ts.start_time DESC
+        LIMIT 10
+    ");
+    $stmt->execute([$userId]);
+    $pastTrainings = $stmt->fetchAll();
+} catch (PDOException $e) {
+    error_log("Error fetching past trainings: " . $e->getMessage());
+}
+
+// Функция для форматирования месяца на русском
+function getRussianMonth($date) {
+    $months = [
+        1 => 'Январь', 2 => 'Февраль', 3 => 'Март', 4 => 'Апрель',
+        5 => 'Май', 6 => 'Июнь', 7 => 'Июль', 8 => 'Август',
+        9 => 'Сентябрь', 10 => 'Октябрь', 11 => 'Ноябрь', 12 => 'Декабрь'
+    ];
+    
+    $monthNum = (int)date('n', strtotime($date));
+    return $months[$monthNum];
+}
+
+// Функция для форматирования типа тренировки
+function getTrainingTitle($serviceId, $serviceName) {
+    if (empty($serviceName)) {
+        switch ($serviceId) {
+            case 1: return 'Персональная тренировка';
+            case 2: return 'Групповое занятие: Йога';
+            case 3: return 'Силовая тренировка';
+            case 4: return 'Кардио и растяжка';
+            case 5: return 'Тренировка в бассейне';
+            default: return 'Тренировка';
+        }
+    }
+    return $serviceName;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -11,20 +130,7 @@
     <link rel="stylesheet" href="style/profile.css">
 </head>
 <body>
-    <?php
-    // Добавляем обработку выхода из системы
-    if (isset($_GET['logout'])) {
-        // Уничтожаем сессию
-        session_start();
-        session_destroy();
-        
-        // Перенаправляем на главную страницу
-        header("Location: index.php");
-        exit();
-    }
-
-    include 'header.php';
-    ?>
+    <?php include 'header.php'; ?>
     
     <main class="profile-page">
         <div class="container">
@@ -32,14 +138,14 @@
                 <div class="profile-sidebar">
                     <div class="profile-user">
                         <div class="profile-avatar">
-                            <img src="assets/img/avatar-placeholder.svg" alt="Аватар пользователя" id="userAvatar">
+                            <img src="<?php echo htmlspecialchars($profileImage); ?>" alt="Аватар пользователя" id="userAvatar">
                             <button class="profile-avatar-edit" id="changeAvatarBtn">
                                 <img src="assets/svg/edit.svg" alt="Изменить">
                             </button>
                         </div>
                         <div class="profile-user-info">
-                            <h2 class="profile-user-name" id="userName">Иван Иванов</h2>
-                            <p class="profile-user-membership">Премиум абонемент</p>
+                            <h2 class="profile-user-name" id="userName"><?php echo htmlspecialchars($firstName . ' ' . $lastName); ?></h2>
+                            <p class="profile-user-membership">Стандартный абонемент</p>
                         </div>
                     </div>
                     <nav class="profile-nav">
@@ -98,35 +204,36 @@
                                 <div class="profile-form-row">
                                     <div class="profile-form-group">
                                         <label for="profile-name" class="profile-form-label">Имя</label>
-                                        <input type="text" id="profile-name" class="profile-form-input" value="Иван" disabled>
+                                        <input type="text" id="profile-name" class="profile-form-input" value="<?php echo htmlspecialchars($firstName); ?>" disabled>
                                     </div>
                                     <div class="profile-form-group">
                                         <label for="profile-surname" class="profile-form-label">Фамилия</label>
-                                        <input type="text" id="profile-surname" class="profile-form-input" value="Иванов" disabled>
+                                        <input type="text" id="profile-surname" class="profile-form-input" value="<?php echo htmlspecialchars($lastName); ?>" disabled>
                                     </div>
                                 </div>
                                 
                                 <div class="profile-form-row">
                                     <div class="profile-form-group">
                                         <label for="profile-email" class="profile-form-label">Email</label>
-                                        <input type="email" id="profile-email" class="profile-form-input" value="ivan@example.com" disabled>
+                                        <input type="email" id="profile-email" class="profile-form-input" value="<?php echo htmlspecialchars($email); ?>" disabled>
                                     </div>
                                     <div class="profile-form-group">
                                         <label for="profile-phone" class="profile-form-label">Телефон</label>
-                                        <input type="tel" id="profile-phone" class="profile-form-input" value="+7 (999) 123-45-67" disabled>
+                                        <input type="tel" id="profile-phone" class="profile-form-input" value="<?php echo htmlspecialchars($phone); ?>" disabled>
                                     </div>
                                 </div>
                                 
                                 <div class="profile-form-row">
                                     <div class="profile-form-group">
                                         <label for="profile-birthdate" class="profile-form-label">Дата рождения</label>
-                                        <input type="date" id="profile-birthdate" class="profile-form-input" value="1990-01-01" disabled>
+                                        <input type="date" id="profile-birthdate" class="profile-form-input" value="<?php echo htmlspecialchars($birthDate); ?>" disabled>
                                     </div>
                                     <div class="profile-form-group">
                                         <label for="profile-gender" class="profile-form-label">Пол</label>
                                         <select id="profile-gender" class="profile-form-select" disabled>
-                                            <option value="male" selected>Мужской</option>
-                                            <option value="female">Женский</option>
+                                            <option value="male" <?php echo $gender === 'male' ? 'selected' : ''; ?>>Мужской</option>
+                                            <option value="female" <?php echo $gender === 'female' ? 'selected' : ''; ?>>Женский</option>
+                                            <option value="other" <?php echo $gender === 'other' ? 'selected' : ''; ?>>Другой</option>
                                         </select>
                                     </div>
                                 </div>
@@ -151,11 +258,11 @@
                                 <div class="profile-form-row">
                                     <div class="profile-form-group">
                                         <label for="profile-height" class="profile-form-label">Рост (см)</label>
-                                        <input type="number" id="profile-height" class="profile-form-input" value="178" disabled>
+                                        <input type="number" id="profile-height" class="profile-form-input" value="<?php echo htmlspecialchars($height); ?>" disabled>
                                     </div>
                                     <div class="profile-form-group">
                                         <label for="profile-weight" class="profile-form-label">Вес (кг)</label>
-                                        <input type="number" id="profile-weight" class="profile-form-input" value="75" disabled>
+                                        <input type="number" id="profile-weight" class="profile-form-input" value="<?php echo htmlspecialchars($weight); ?>" disabled>
                                     </div>
                                 </div>
                                 
@@ -183,39 +290,31 @@
                             </div>
                             
                             <div class="training-list">
-                                <div class="training-card">
-                                    <div class="training-info">
-                                        <div class="training-date">
-                                            <div class="training-day">15</div>
-                                            <div class="training-month">Июль</div>
-                                        </div>
-                                        <div class="training-details">
-                                            <h4 class="training-title">Силовая тренировка</h4>
-                                            <div class="training-time">18:00 - 19:30</div>
-                                            <div class="training-coach">Тренер: Алексей Петров</div>
-                                        </div>
-                                    </div>
-                                    <div class="training-actions">
-                                        <button class="training-cancel">Отменить</button>
-                                    </div>
+                                <?php if (empty($upcomingTrainings)): ?>
+                                <div class="training-empty">
+                                    <p>У вас пока нет запланированных тренировок</p>
+                                    <a href="training_session.php" class="training-empty-button">Записаться на тренировку</a>
                                 </div>
-                                
-                                <div class="training-card">
-                                    <div class="training-info">
-                                        <div class="training-date">
-                                            <div class="training-day">17</div>
-                                            <div class="training-month">Июль</div>
+                                <?php else: ?>
+                                    <?php foreach ($upcomingTrainings as $training): ?>
+                                    <div class="training-card">
+                                        <div class="training-info">
+                                            <div class="training-date">
+                                                <div class="training-day"><?php echo date('d', strtotime($training['session_date'])); ?></div>
+                                                <div class="training-month"><?php echo getRussianMonth($training['session_date']); ?></div>
+                                            </div>
+                                            <div class="training-details">
+                                                <h4 class="training-title"><?php echo htmlspecialchars(getTrainingTitle($training['service_id'], $training['service_name'])); ?></h4>
+                                                <div class="training-time"><?php echo substr($training['start_time'], 0, 5); ?> - <?php echo substr($training['end_time'], 0, 5); ?></div>
+                                                <div class="training-coach">Тренер: <?php echo htmlspecialchars($training['trainer_name'] ?: 'Не назначен'); ?></div>
+                                            </div>
                                         </div>
-                                        <div class="training-details">
-                                            <h4 class="training-title">Кардио и растяжка</h4>
-                                            <div class="training-time">19:00 - 20:00</div>
-                                            <div class="training-coach">Тренер: Мария Сидорова</div>
+                                        <div class="training-actions">
+                                            <button class="training-cancel" data-id="<?php echo $training['id']; ?>">Отменить</button>
                                         </div>
                                     </div>
-                                    <div class="training-actions">
-                                        <button class="training-cancel">Отменить</button>
-                                    </div>
-                                </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                         
@@ -225,39 +324,30 @@
                             </div>
                             
                             <div class="training-list">
-                                <div class="training-card past">
-                                    <div class="training-info">
-                                        <div class="training-date">
-                                            <div class="training-day">10</div>
-                                            <div class="training-month">Июль</div>
-                                        </div>
-                                        <div class="training-details">
-                                            <h4 class="training-title">Групповое занятие: Йога</h4>
-                                            <div class="training-time">18:00 - 19:00</div>
-                                            <div class="training-coach">Тренер: Ольга Смирнова</div>
-                                        </div>
-                                    </div>
-                                    <div class="training-actions">
-                                        <div class="training-status completed">Проведена</div>
-                                    </div>
+                                <?php if (empty($pastTrainings)): ?>
+                                <div class="training-empty">
+                                    <p>История тренировок пуста</p>
                                 </div>
-                                
-                                <div class="training-card past">
-                                    <div class="training-info">
-                                        <div class="training-date">
-                                            <div class="training-day">8</div>
-                                            <div class="training-month">Июль</div>
+                                <?php else: ?>
+                                    <?php foreach ($pastTrainings as $training): ?>
+                                    <div class="training-card past">
+                                        <div class="training-info">
+                                            <div class="training-date">
+                                                <div class="training-day"><?php echo date('d', strtotime($training['session_date'])); ?></div>
+                                                <div class="training-month"><?php echo getRussianMonth($training['session_date']); ?></div>
+                                            </div>
+                                            <div class="training-details">
+                                                <h4 class="training-title"><?php echo htmlspecialchars(getTrainingTitle($training['service_id'], $training['service_name'])); ?></h4>
+                                                <div class="training-time"><?php echo substr($training['start_time'], 0, 5); ?> - <?php echo substr($training['end_time'], 0, 5); ?></div>
+                                                <div class="training-coach">Тренер: <?php echo htmlspecialchars($training['trainer_name'] ?: 'Не назначен'); ?></div>
+                                            </div>
                                         </div>
-                                        <div class="training-details">
-                                            <h4 class="training-title">Силовая тренировка</h4>
-                                            <div class="training-time">17:30 - 19:00</div>
-                                            <div class="training-coach">Тренер: Алексей Петров</div>
+                                        <div class="training-actions">
+                                            <div class="training-status completed"><?php echo $training['status'] == 'cancelled' ? 'Отменена' : 'Проведена'; ?></div>
                                         </div>
                                     </div>
-                                    <div class="training-actions">
-                                        <div class="training-status completed">Проведена</div>
-                                    </div>
-                                </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

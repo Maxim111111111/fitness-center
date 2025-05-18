@@ -333,3 +333,125 @@
     height: 45px;
   }
 }
+
+/* Стили для сообщений об ошибках и успешных операциях */
+.form-error-message {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-top: 5px;
+  font-family: "Montserrat", sans-serif;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.form-success-message {
+  background: rgba(50, 221, 212, 0.1);
+  border-left: 3px solid #32ddd4;
+  color: #ffffff;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-success-message.animate-in {
+  animation: fadeInUp 0.5s forwards;
+}
+
+.form-success-message.animate-out {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.input-error {
+  border-color: #ff4d4d !important;
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-3px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(3px, 0, 0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Стили для индикатора загрузки */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Стили для сообщений об ошибке и успехе */
+.auth-error,
+.auth-success {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.auth-error {
+  background-color: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff5050;
+}
+
+.auth-success {
+  background-color: rgba(40, 176, 169, 0.15);
+  border: 1px solid rgba(40, 176, 169, 0.3);
+  color: #32ddd4;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

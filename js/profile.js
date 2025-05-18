@@ -60,19 +60,77 @@ document.addEventListener("DOMContentLoaded", function () {
     profileForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Здесь будет код для отправки данных на сервер
-      console.log("Отправка формы профиля");
+      // Показываем индикатор загрузки на кнопке
+      const submitButton = profileForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      submitButton.innerHTML =
+        '<span class="loading-spinner"></span> Сохранение...';
+      submitButton.disabled = true;
 
-      // Деактивируем поля после сохранения
-      profileForm.querySelectorAll("input, select").forEach((field) => {
-        field.disabled = true;
-      });
+      // Собираем данные формы
+      const formData = new FormData();
+      formData.append("action", "update_profile");
+      formData.append(
+        "first_name",
+        document.getElementById("profile-name").value
+      );
+      formData.append(
+        "last_name",
+        document.getElementById("profile-surname").value
+      );
+      formData.append("phone", document.getElementById("profile-phone").value);
+      formData.append(
+        "birth_date",
+        document.getElementById("profile-birthdate").value
+      );
+      formData.append(
+        "gender",
+        document.getElementById("profile-gender").value
+      );
 
-      // Скрываем кнопки действий
-      profileFormActions.style.display = "none";
+      // Отправляем данные на сервер
+      fetch("profile_handler.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Обновляем имя пользователя в шапке
+            const userName = document.getElementById("userName");
+            if (userName) {
+              userName.textContent = `${
+                document.getElementById("profile-name").value
+              } ${document.getElementById("profile-surname").value}`;
+            }
 
-      // Показываем уведомление об успешном сохранении
-      alert("Данные профиля успешно сохранены");
+            // Показываем уведомление об успехе
+            showNotification(data.message, "success");
+          } else {
+            // Показываем уведомление об ошибке
+            showNotification(data.message, "error");
+          }
+
+          // Деактивируем поля после сохранения
+          profileForm.querySelectorAll("input, select").forEach((field) => {
+            field.disabled = true;
+          });
+
+          // Скрываем кнопки действий
+          profileFormActions.style.display = "none";
+
+          // Восстанавливаем кнопку
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          showNotification("Произошла ошибка при сохранении данных", "error");
+
+          // Восстанавливаем кнопку
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        });
     });
   }
 
@@ -115,19 +173,60 @@ document.addEventListener("DOMContentLoaded", function () {
     paramsForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Здесь будет код для отправки данных на сервер
-      console.log("Отправка формы физических параметров");
+      // Показываем индикатор загрузки на кнопке
+      const submitButton = paramsForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      submitButton.innerHTML =
+        '<span class="loading-spinner"></span> Сохранение...';
+      submitButton.disabled = true;
 
-      // Деактивируем поля после сохранения
-      paramsForm.querySelectorAll("input").forEach((field) => {
-        field.disabled = true;
-      });
+      // Собираем данные формы
+      const formData = new FormData();
+      formData.append("action", "update_params");
+      formData.append(
+        "height",
+        document.getElementById("profile-height").value
+      );
+      formData.append(
+        "weight",
+        document.getElementById("profile-weight").value
+      );
 
-      // Скрываем кнопки действий
-      paramsFormActions.style.display = "none";
+      // Отправляем данные на сервер
+      fetch("profile_handler.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Показываем уведомление об успехе
+            showNotification(data.message, "success");
+          } else {
+            // Показываем уведомление об ошибке
+            showNotification(data.message, "error");
+          }
 
-      // Показываем уведомление об успешном сохранении
-      alert("Физические параметры успешно сохранены");
+          // Деактивируем поля после сохранения
+          paramsForm.querySelectorAll("input").forEach((field) => {
+            field.disabled = true;
+          });
+
+          // Скрываем кнопки действий
+          paramsFormActions.style.display = "none";
+
+          // Восстанавливаем кнопку
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          showNotification("Произошла ошибка при сохранении данных", "error");
+
+          // Восстанавливаем кнопку
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        });
     });
   }
 
@@ -142,47 +241,71 @@ document.addEventListener("DOMContentLoaded", function () {
       const confirmPassword = document.getElementById("confirm-password").value;
 
       if (!currentPassword) {
-        alert("Пожалуйста, введите текущий пароль");
+        showNotification("Пожалуйста, введите текущий пароль", "error");
         return;
       }
 
       if (!newPassword) {
-        alert("Пожалуйста, введите новый пароль");
+        showNotification("Пожалуйста, введите новый пароль", "error");
         return;
       }
 
       if (newPassword.length < 6) {
-        alert("Новый пароль должен содержать не менее 6 символов");
+        showNotification(
+          "Новый пароль должен содержать не менее 6 символов",
+          "error"
+        );
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        alert("Пароли не совпадают");
+        showNotification("Пароли не совпадают", "error");
         return;
       }
 
-      // Здесь будет код для отправки данных на сервер
-      console.log("Отправка формы смены пароля");
+      // Показываем индикатор загрузки на кнопке
+      const submitButton = passwordForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      submitButton.innerHTML =
+        '<span class="loading-spinner"></span> Сохранение...';
+      submitButton.disabled = true;
 
-      // Очищаем поля после отправки
-      passwordForm.reset();
+      // Собираем данные формы
+      const formData = new FormData();
+      formData.append("action", "change_password");
+      formData.append("current_password", currentPassword);
+      formData.append("new_password", newPassword);
+      formData.append("confirm_password", confirmPassword);
 
-      // Показываем уведомление об успешном сохранении
-      alert("Пароль успешно изменен");
-    });
-  }
+      // Отправляем данные на сервер
+      fetch("profile_handler.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Показываем уведомление об успехе
+            showNotification(data.message, "success");
+            // Очищаем форму
+            passwordForm.reset();
+          } else {
+            // Показываем уведомление об ошибке
+            showNotification(data.message, "error");
+          }
 
-  // Обработка формы настроек уведомлений
-  const notificationForm = document.getElementById("notificationForm");
-  if (notificationForm) {
-    notificationForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+          // Восстанавливаем кнопку
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          showNotification("Произошла ошибка при смене пароля", "error");
 
-      // Здесь будет код для отправки данных на сервер
-      console.log("Отправка формы настроек уведомлений");
-
-      // Показываем уведомление об успешном сохранении
-      alert("Настройки уведомлений успешно сохранены");
+          // Восстанавливаем кнопку
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        });
     });
   }
 
@@ -220,22 +343,97 @@ document.addEventListener("DOMContentLoaded", function () {
 
       fileInput.addEventListener("change", function () {
         if (this.files && this.files[0]) {
-          const reader = new FileReader();
+          const file = this.files[0];
 
+          // Проверка типа файла
+          const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+          ];
+          if (!allowedTypes.includes(file.type)) {
+            showNotification(
+              "Недопустимый тип файла. Разрешены только изображения (JPEG, PNG, GIF, WebP)",
+              "error"
+            );
+            document.body.removeChild(fileInput);
+            return;
+          }
+
+          // Проверка размера файла (не более 5 МБ)
+          if (file.size > 5 * 1024 * 1024) {
+            showNotification(
+              "Размер файла превышает допустимый (5 МБ)",
+              "error"
+            );
+            document.body.removeChild(fileInput);
+            return;
+          }
+
+          // Показываем загруженное изображение
+          const reader = new FileReader();
           reader.onload = function (e) {
             userAvatar.src = e.target.result;
-
-            // Здесь будет код для отправки файла на сервер
-            console.log("Загрузка нового аватара");
           };
+          reader.readAsDataURL(file);
 
-          reader.readAsDataURL(this.files[0]);
+          // Загружаем файл на сервер
+          const formData = new FormData();
+          formData.append("action", "update_avatar");
+          formData.append("avatar", file);
+
+          fetch("profile_handler.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Обновляем аватар после успешной загрузки
+                userAvatar.src = data.avatar_url;
+                showNotification(data.message, "success");
+              } else {
+                // Показываем уведомление об ошибке
+                showNotification(data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              showNotification(
+                "Произошла ошибка при загрузке аватара",
+                "error"
+              );
+            });
         }
 
         // Удаляем временный input
         document.body.removeChild(fileInput);
       });
     });
+  }
+
+  // Функция для отображения уведомлений
+  function showNotification(message, type) {
+    // Проверяем, нет ли уже уведомления
+    let notification = document.querySelector(".notification");
+    if (!notification) {
+      notification = document.createElement("div");
+      notification.className = "notification";
+      document.body.appendChild(notification);
+    }
+
+    // Устанавливаем тип и сообщение
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    // Показываем уведомление
+    notification.classList.add("show");
+
+    // Скрываем уведомление через 3 секунды
+    setTimeout(() => {
+      notification.classList.remove("show");
+    }, 3000);
   }
 
   // Обработка выхода из аккаунта
@@ -246,11 +444,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Подтверждение выхода
       if (confirm("Вы действительно хотите выйти из аккаунта?")) {
-        // Здесь будет код для выхода из аккаунта
-        console.log("Выход из аккаунта");
-
-        // Перенаправление на главную страницу
-        window.location.href = "index.php";
+        // Перенаправление на страницу выхода
+        window.location.href = this.href;
       }
     });
   }
@@ -303,4 +498,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Обработка изменения хеш-фрагмента URL
   window.addEventListener("hashchange", activateTabFromHash);
+
+  // Обработчик отмены тренировки
+  document.addEventListener("DOMContentLoaded", function () {
+    // Находим все кнопки отмены тренировки
+    const cancelButtons = document.querySelectorAll(".training-cancel");
+
+    cancelButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const trainingId = this.getAttribute("data-id");
+        if (confirm("Вы уверены, что хотите отменить эту тренировку?")) {
+          cancelTraining(trainingId);
+        }
+      });
+    });
+  });
+
+  // Функция для отмены тренировки
+  function cancelTraining(trainingId) {
+    fetch("training_cancel_handler.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "training_id=" + trainingId,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Показываем сообщение об успехе
+          alert(data.message);
+          // Перезагружаем страницу для обновления списка тренировок
+          window.location.reload();
+        } else {
+          // Показываем сообщение об ошибке
+          alert(data.message || "Произошла ошибка при отмене тренировки");
+        }
+      })
+      .catch((error) => {
+        console.error("Ошибка:", error);
+        alert("Произошла ошибка при отмене тренировки");
+      });
+  }
 });

@@ -20,15 +20,17 @@ if (!$email || !$password) {
 }
 
 try {
-    // Обновленный запрос в соответствии с структурой базы данных
-    $stmt = $pdo->prepare("SELECT id, first_name, email, password_hash, role FROM users WHERE email = ? AND is_active = TRUE");
+    // Обновлен запрос для получения имени и фамилии
+    $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, password_hash, role FROM users WHERE email = ? AND is_active = TRUE");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
-        // Создаем сессию
+        // Создаем сессию с данными пользователя
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['first_name'];
+        $_SESSION['first_name'] = $user['first_name'];
+        $_SESSION['last_name'] = $user['last_name'] ?? '';
+        $_SESSION['username'] = $user['first_name']; // Оставляем для совместимости
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
 
