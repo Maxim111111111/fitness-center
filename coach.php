@@ -1,3 +1,18 @@
+<?php
+require_once 'database/config.php';
+
+// Получаем список всех тренеров (ограничиваем 8)
+$stmt = $pdo->prepare("
+    SELECT t.id, t.photo_url, t.experience_years, t.achievements, 
+           u.first_name, u.last_name, u.phone
+    FROM trainers t
+    JOIN users u ON t.user_id = u.id
+    WHERE t.is_active = TRUE
+    LIMIT 8
+");
+$stmt->execute();
+$trainers = $stmt->fetchAll();
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -41,156 +56,28 @@
         <div class="container">
           <h2 class="trainers__title">Тренеры</h2>
           <div class="trainers__grid">
+            <?php foreach ($trainers as $trainer): ?>
             <div class="trainers__card">
-              <a href="coach-details.php?id=1" class="trainers__card-link">
+              <a href="coach-details.php?id=<?php echo $trainer['id']; ?>" class="trainers__card-link">
                 <div class="trainers__card-overlay"></div>
                 <img
-                  src="assets/img/trainers/trainer-1.jpg"
-                  alt="Иван Иванов"
+                  src="<?php echo file_exists($trainer['photo_url']) ? $trainer['photo_url'] : 'images/trainers/default.jpg'; ?>"
+                  alt="<?php echo $trainer['first_name'] . ' ' . $trainer['last_name']; ?>"
                   class="trainers__card-image"
                 />
                 <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
+                  <h3 class="trainers__card-name"><?php echo $trainer['first_name'] . ' ' . $trainer['last_name']; ?></h3>
                   <p class="trainers__card-position">
-                    Мастер тренер. Элит тренер
+                    <?php echo ($trainer['experience_years'] > 7) ? 'Мастер тренер' : 'Тренер'; ?>
+                    <?php echo ($trainer['experience_years'] > 9) ? '. Элит тренер' : ''; ?>
                   </p>
                 </div>
               </a>
             </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=2" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-2.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">
-                    Мастер тренер. Элит тренер
-                  </p>
-                </div>
-              </a>
-            </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=3" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-3.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">
-                    Мастер тренер. Элит тренер
-                  </p>
-                </div>
-              </a>
-            </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=4" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-4.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">
-                    Мастер тренер. Элит тренер
-                  </p>
-                </div>
-              </a>
-            </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=5" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-5.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">Мастер тренер</p>
-                </div>
-              </a>
-            </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=6" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-6.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">Мастер тренер</p>
-                </div>
-              </a>
-            </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=7" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-7.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">Мастер тренер</p>
-                </div>
-              </a>
-            </div>
-            <div class="trainers__card">
-              <a href="coach-details.php?id=8" class="trainers__card-link">
-                <div class="trainers__card-overlay"></div>
-                <img
-                  src="assets/img/trainers/trainer-8.jpg"
-                  alt="Иван Иванов"
-                  class="trainers__card-image"
-                />
-                <div class="trainers__card-content">
-                  <h3 class="trainers__card-name">Иван Иванов</h3>
-                  <p class="trainers__card-position">Мастер тренер</p>
-                </div>
-              </a>
-            </div>
+            <?php endforeach; ?>
           </div>
         </div>
       </div>
-
-        <section class="contacts">
-            <div class="container">
-                <div class="contacts__wrapper">
-                    <div class="contacts__content">
-                        <h2 class="contacts__title">Контакты</h2>
-                        <div class="contacts__info">
-                            <div class="contacts__item">
-                                <span class="contacts__label">Адрес:</span>
-                                <p class="contacts__text">г. Москва м. Ясенево, ул. Голубинская,<br />д. 16</p>
-                            </div>
-                            <div class="contacts__item">
-                                <span class="contacts__label">Телефон:</span>
-                                <a href="tel:+74954816060" class="contacts__text">+7 (495) 481-60-60</a>
-                            </div>
-                            <div class="contacts__item">
-                                <span class="contacts__label">E-mail:</span>
-                                <a href="mailto:moreon@more-on.ru" class="contacts__text">moreon@more-on.ru</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="contacts__map">
-                        <div id="map" class="contacts__map-container"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
     <?php include 'footer.php'; ?>
     <script src="js/map.js"></script>

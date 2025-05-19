@@ -253,3 +253,39 @@
     height: 25px;
   }
 }
+
+/* Add styles for the star rating */
+.star-rating {
+  display: flex;
+  margin-top: 10px;
+}
+
+.star {
+  font-size: 24px;
+  color: #ccc;
+  margin-right: 5px;
+}
+
+.star.active {
+  color: #ffca28;
+}
+
+/* Styles for rating stars in the form */
+.rating-stars {
+  display: flex;
+  margin-left: 10px;
+}
+
+.rating-star {
+  width: 24px;
+  height: 24px;
+  background-image: url("../assets/svg/star-empty.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.rating-star.active {
+  background-image: url("../assets/svg/star-filled.svg");
+}

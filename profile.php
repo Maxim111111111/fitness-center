@@ -14,6 +14,12 @@ require_once('database/config.php');
 
 // Обработка выхода из системы
 if (isset($_GET['logout'])) {
+    // Удаляем cookie remember_token
+    setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+    
+    // Очищаем все данные сессии
+    $_SESSION = array();
+    
     // Уничтожаем сессию
     session_destroy();
     

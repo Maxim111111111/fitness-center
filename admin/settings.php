@@ -3,7 +3,7 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов)
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header('Location: ../login.php');
     exit();
 }

@@ -1,3 +1,18 @@
+<?php
+// Include database configuration
+require_once 'database/config.php';
+
+// Get approved reviews from database
+try {
+    $stmt = $pdo->prepare("SELECT * FROM reviews WHERE status = 'approved' ORDER BY created_at DESC");
+    $stmt->execute();
+    $reviews = $stmt->fetchAll();
+} catch (PDOException $e) {
+    $reviews = [];
+    // Log error but don't show to user
+    error_log("Error fetching reviews: " . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -41,190 +56,48 @@
             <div class="swiper promotions__swiper">
               <!-- Additional required wrapper -->
               <div class="swiper-wrapper">
-                <!-- Group 1 -->
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
+                <?php if (!empty($reviews)): ?>
+                  <?php foreach ($reviews as $review): ?>
+                    <div class="swiper-slide promotions__slide">
+                      <div class="loading-overlay"></div>
+                      <div class="reviews__wrapper">
+                        <p class="reviews__username"><?php echo htmlspecialchars($review['name']); ?></p>
+                        <p class="reviews__text">
+                          <?php echo htmlspecialchars($review['text']); ?>
+                        </p>
+                        <div class="reviews__stars">
+                          <?php
+                            // Display stars based on rating
+                            $rating = (int)$review['rating'];
+                            echo '<div class="star-rating">';
+                            for ($i = 1; $i <= 5; $i++) {
+                                $activeClass = $i <= $rating ? 'active' : '';
+                                echo '<span class="star ' . $activeClass . '">★</span>';
+                            }
+                            echo '</div>';
+                          ?>
+                        </div>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <!-- Default review if none in database -->
+                  <div class="swiper-slide promotions__slide">
+                    <div class="loading-overlay"></div>
+                    <div class="reviews__wrapper">
+                      <p class="reviews__username">Ольга</p>
+                      <p class="reviews__text">
+                        Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
+                        40 видами групповых программ, детским клубом, школой
+                        единоборств и скалодромом. Оборудование тренажерного зала
+                        поставляет эксклюзивный партнер
+                      </p>
+                      <div class="reviews__stars">
+                        <img src="assets/svg/Stars.svg" alt="star" />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <!-- Group 2 -->
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <!-- Group 3 -->
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <!-- Group 4 -->
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide promotions__slide">
-                  <div class="loading-overlay"></div>
-                  <div class="reviews__wrapper">
-                    <p class="reviews__username">Ольга</p>
-                    <p class="reviews__text">
-                      Мореон Фитнес – семейный премиум фитнес-клуб с бассейном,
-                      40 видами групповых программ, детским клубом, школой
-                      единоборств и скалодромом. Оборудование тренажерного зала
-                      поставляет эксклюзивный партнер
-                    </p>
-                    <div class="reviews__stars">
-                      <img src="assets/svg/Stars.svg" alt="star" />
-                    </div>
-                  </div>
-                </div>
+                <?php endif; ?>
               </div>
               <!-- Add Pagination -->
               <div class="swiper-pagination promotions__pagination"></div>
@@ -253,38 +126,6 @@
           </div>
         </div>
       </div>
-        <section class="contacts">
-        <div class="container">
-          <div class="contacts__wrapper">
-            <div class="contacts__content">
-              <h2 class="contacts__title">Контакты</h2>
-              <div class="contacts__info">
-                <div class="contacts__item">
-                  <span class="contacts__label">Адрес:</span>
-                  <p class="contacts__text">
-                    г. Москва м. Ясенево, ул. Голубинская,<br />д. 16
-                  </p>
-                </div>
-                <div class="contacts__item">
-                  <span class="contacts__label">Телефон:</span>
-                  <a href="tel:+74954816060" class="contacts__text"
-                    >+7 (495) 481-60-60</a
-                  >
-                </div>
-                <div class="contacts__item">
-                  <span class="contacts__label">E-mail:</span>
-                  <a href="mailto:moreon@more-on.ru" class="contacts__text"
-                    >moreon@more-on.ru</a
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="contacts__map">
-              <div id="map" class="contacts__map-container"></div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
     
     <!-- Модальное окно с формой отзыва -->

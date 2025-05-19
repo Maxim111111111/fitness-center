@@ -3,7 +3,7 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -19,21 +19,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             
             $review_id = (int)$_POST['review_id'];
-            $moderator_id = $_SESSION['user_id'];
             
             try {
                 $stmt = $pdo->prepare("
                     UPDATE reviews 
-                    SET is_approved = 1, moderated_by = ?, moderated_at = NOW() 
+                    SET status = 'approved', updated_at = CURRENT_TIMESTAMP 
                     WHERE id = ?
                 ");
-                $stmt->execute([$moderator_id, $review_id]);
+                $stmt->execute([$review_id]);
                 
                 header('Location: reviews.php?success=approve');
                 exit();
             } catch (PDOException $e) {
                 error_log("Database error: " . $e->getMessage());
                 header('Location: reviews.php?error=approve');
+                exit();
+            }
+            break;
+            
+        case 'reject':
+            // Код для отклонения отзыва
+            if (!isset($_POST['review_id']) || !is_numeric($_POST['review_id'])) {
+                header('Location: reviews.php?error=reject');
+                exit();
+            }
+            
+            $review_id = (int)$_POST['review_id'];
+            
+            try {
+                $stmt = $pdo->prepare("
+                    UPDATE reviews 
+                    SET status = 'rejected', updated_at = CURRENT_TIMESTAMP 
+                    WHERE id = ?
+                ");
+                $stmt->execute([$review_id]);
+                
+                header('Location: reviews.php?success=reject');
+                exit();
+            } catch (PDOException $e) {
+                error_log("Database error: " . $e->getMessage());
+                header('Location: reviews.php?error=reject');
                 exit();
             }
             break;
@@ -77,9 +102,11 @@ $params = [];
 $conditions = [];
 
 if ($status === 'approved') {
-    $conditions[] = "r.is_approved = 1";
+    $conditions[] = "r.status = 'approved'";
 } elseif ($status === 'pending') {
-    $conditions[] = "r.is_approved = 0";
+    $conditions[] = "r.status = 'pending'";
+} elseif ($status === 'rejected') {
+    $conditions[] = "r.status = 'rejected'";
 }
 
 if (!empty($rating)) {
@@ -88,7 +115,7 @@ if (!empty($rating)) {
 }
 
 if (!empty($search)) {
-    $conditions[] = "(u.first_name LIKE :search OR u.last_name LIKE :search OR r.comment LIKE :search)";
+    $conditions[] = "(r.name LIKE :search OR r.email LIKE :search OR r.text LIKE :search)";
     $params[':search'] = "%{$search}%";
 }
 
@@ -98,10 +125,6 @@ $whereClause = !empty($conditions) ? "WHERE " . implode(" AND ", $conditions) : 
 $countSql = "
     SELECT COUNT(*)
     FROM reviews r
-    LEFT JOIN users u ON r.user_id = u.id
-    LEFT JOIN trainers tr ON r.trainer_id = tr.id
-    LEFT JOIN users t ON tr.user_id = t.id
-    LEFT JOIN services s ON r.service_id = s.id
     {$whereClause}
 ";
 
@@ -115,21 +138,8 @@ $totalPages = ceil($totalReviews / $perPage);
 
 // Получение отзывов с пагинацией и сортировкой
 $sql = "
-    SELECT 
-        r.*, 
-        u.first_name as user_first_name, 
-        u.last_name as user_last_name,
-        t.first_name as trainer_first_name, 
-        t.last_name as trainer_last_name,
-        s.name as service_name,
-        m.first_name as moderator_first_name,
-        m.last_name as moderator_last_name
+    SELECT r.*
     FROM reviews r
-    LEFT JOIN users u ON r.user_id = u.id
-    LEFT JOIN trainers tr ON r.trainer_id = tr.id
-    LEFT JOIN users t ON tr.user_id = t.id
-    LEFT JOIN services s ON r.service_id = s.id
-    LEFT JOIN users m ON r.moderated_by = m.id
     {$whereClause}
     ORDER BY r.created_at DESC
     LIMIT :offset, :perPage
@@ -166,6 +176,9 @@ include 'includes/header.php';
                         case 'approve':
                             echo 'Отзыв успешно одобрен.';
                             break;
+                        case 'reject':
+                            echo 'Отзыв отклонен.';
+                            break;
                         case 'delete':
                             echo 'Отзыв успешно удален.';
                             break;
@@ -181,6 +194,9 @@ include 'includes/header.php';
                     switch ($_GET['error']) {
                         case 'approve':
                             echo 'Ошибка при одобрении отзыва.';
+                            break;
+                        case 'reject':
+                            echo 'Ошибка при отклонении отзыва.';
                             break;
                         case 'delete':
                             echo 'Ошибка при удалении отзыва.';
@@ -205,6 +221,7 @@ include 'includes/header.php';
                                 <option value="">Все</option>
                                 <option value="approved" <?= $status === 'approved' ? 'selected' : '' ?>>Одобренные</option>
                                 <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>Ожидающие</option>
+                                <option value="rejected" <?= $status === 'rejected' ? 'selected' : '' ?>>Отклонённые</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -220,7 +237,7 @@ include 'includes/header.php';
                         </div>
                         <div class="col-md-4">
                             <label for="filter-search" class="form-label">Поиск</label>
-                            <input type="text" class="form-control" id="filter-search" name="search" placeholder="Имя, текст отзыва" value="<?= htmlspecialchars($search) ?>">
+                            <input type="text" class="form-control" id="filter-search" name="search" placeholder="Имя, email, текст отзыва" value="<?= htmlspecialchars($search) ?>">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">Применить</button>
@@ -235,10 +252,10 @@ include 'includes/header.php';
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Пользователь</th>
+                            <th>Имя</th>
+                            <th>Email</th>
                             <th>Рейтинг</th>
                             <th>Отзыв</th>
-                            <th>О чем</th>
                             <th>Дата</th>
                             <th>Статус</th>
                             <th>Действия</th>
@@ -246,9 +263,10 @@ include 'includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($reviews as $review): ?>
-                        <tr class="<?= !$review['is_approved'] ? 'table-warning' : '' ?>">
+                        <tr class="<?= $review['status'] === 'pending' ? 'table-warning' : ($review['status'] === 'rejected' ? 'table-danger' : '') ?>">
                             <td><?= htmlspecialchars($review['id']) ?></td>
-                            <td><?= htmlspecialchars($review['user_first_name'] . ' ' . $review['user_last_name']) ?></td>
+                            <td><?= htmlspecialchars($review['name']) ?></td>
+                            <td><?= htmlspecialchars($review['email']) ?></td>
                             <td>
                                 <div class="rating">
                                     <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -258,40 +276,31 @@ include 'includes/header.php';
                             </td>
                             <td>
                                 <?php 
-                                // Ограничиваем комментарий до 50 символов
-                                $comment = $review['comment'];
-                                echo htmlspecialchars(strlen($comment) > 50 ? substr($comment, 0, 50) . '...' : $comment);
+                                // Ограничиваем текст отзыва до 50 символов
+                                $text = $review['text'];
+                                echo htmlspecialchars(strlen($text) > 50 ? substr($text, 0, 50) . '...' : $text);
                                 ?>
-                            </td>
-                            <td>
-                                <?php if (!empty($review['trainer_id'])): ?>
-                                    <span class="badge bg-info">Тренер: <?= htmlspecialchars($review['trainer_first_name'] . ' ' . $review['trainer_last_name']) ?></span>
-                                <?php elseif (!empty($review['service_id'])): ?>
-                                    <span class="badge bg-success">Услуга: <?= htmlspecialchars($review['service_name']) ?></span>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary">Общий</span>
-                                <?php endif; ?>
                             </td>
                             <td><?= date('d.m.Y H:i', strtotime($review['created_at'])) ?></td>
                             <td>
-                                <?php if ($review['is_approved']): ?>
+                                <?php if ($review['status'] === 'approved'): ?>
                                     <span class="badge bg-success">Одобрен</span>
-                                    <?php if (!empty($review['moderated_by'])): ?>
-                                        <div class="small text-muted">
-                                            <?= htmlspecialchars($review['moderator_first_name'] . ' ' . $review['moderator_last_name']) ?>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php else: ?>
+                                <?php elseif ($review['status'] === 'pending'): ?>
                                     <span class="badge bg-warning text-dark">Ожидает</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger">Отклонен</span>
                                 <?php endif; ?>
                             </td>
                             <td class="action-buttons">
                                 <button type="button" class="btn btn-sm btn-info view-review" data-bs-toggle="modal" data-bs-target="#viewReviewModal" data-review-id="<?= $review['id'] ?>">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <?php if (!$review['is_approved']): ?>
+                                <?php if ($review['status'] === 'pending'): ?>
                                 <button type="button" class="btn btn-sm btn-success approve-review" data-review-id="<?= $review['id'] ?>">
                                     <i class="fas fa-check"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-warning reject-review" data-review-id="<?= $review['id'] ?>">
+                                    <i class="fas fa-ban"></i>
                                 </button>
                                 <?php endif; ?>
                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReviewModal" data-review-id="<?= $review['id'] ?>">
@@ -347,8 +356,13 @@ include 'includes/header.php';
                 </div>
                 
                 <div class="mb-3">
-                    <strong>Пользователь:</strong>
-                    <span id="view-user"></span>
+                    <strong>Имя:</strong>
+                    <span id="view-name"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Email:</strong>
+                    <span id="view-email"></span>
                 </div>
                 
                 <div class="mb-3">
@@ -358,12 +372,7 @@ include 'includes/header.php';
                 
                 <div class="mb-3">
                     <strong>Отзыв:</strong>
-                    <div id="view-comment" class="border p-2 rounded bg-light"></div>
-                </div>
-                
-                <div class="mb-3">
-                    <strong>Тип отзыва:</strong>
-                    <div id="view-type"></div>
+                    <div id="view-text" class="border p-2 rounded bg-light"></div>
                 </div>
                 
                 <div class="mb-3">
@@ -376,14 +385,15 @@ include 'includes/header.php';
                     <span id="view-status" class="badge"></span>
                 </div>
                 
-                <div class="mb-3" id="view-moderator-container">
-                    <strong>Одобрен:</strong>
-                    <span id="view-moderator"></span>
+                <div class="mb-3" id="view-updated-container">
+                    <strong>Последнее обновление:</strong>
+                    <span id="view-updated"></span>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                 <button type="button" class="btn btn-success approve-from-modal" id="modal-approve-btn">Одобрить</button>
+                <button type="button" class="btn btn-warning reject-from-modal" id="modal-reject-btn">Отклонить</button>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReviewModal" id="modal-delete-btn">Удалить</button>
             </div>
         </div>
@@ -417,6 +427,12 @@ include 'includes/header.php';
 <form id="approveReviewForm" action="reviews.php" method="post" style="display: none;">
     <input type="hidden" name="action" value="approve">
     <input type="hidden" name="review_id" id="approve-review-id">
+</form>
+
+<!-- Форма отклонения отзыва -->
+<form id="rejectReviewForm" action="reviews.php" method="post" style="display: none;">
+    <input type="hidden" name="action" value="reject">
+    <input type="hidden" name="review_id" id="reject-review-id">
 </form>
 
 <script src="js/reviews.js"></script>

@@ -3,7 +3,7 @@
 session_start();
 
 // Проверка авторизации
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager', 'trainer'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager', 'trainer'])) {
     header('Content-Type: application/json');
     echo json_encode([
         'success' => false,

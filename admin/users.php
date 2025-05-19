@@ -3,17 +3,17 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: ../login.php');
     exit();
 }
 
 // Проверка прав на управление пользователями
-if ($_SESSION['role'] === 'manager') {
+if ($_SESSION['user_role'] === 'manager') {
     $stmt = $pdo->prepare("SELECT p.id FROM permissions p 
                          JOIN role_permissions rp ON p.id = rp.permission_id 
                          WHERE rp.role = ? AND p.name = 'manage_users'");
-    $stmt->execute([$_SESSION['role']]);
+    $stmt->execute([$_SESSION['user_role']]);
     if (!$stmt->fetch()) {
         header('Location: index.php');
         exit();
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
             
             // Подготовка данных
-            $role = isset($_POST['role']) ? $_POST['role'] : 'user';
+            $role = isset($_POST['user_role']) ? $_POST['user_role'] : 'user';
             $isActive = isset($_POST['is_active']) ? 1 : 0;
             $phone = isset($_POST['phone']) ? $_POST['phone'] : null;
             
@@ -109,9 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             
             // Добавление роли, если пользователь имеет права на её изменение
-            if ($_SESSION['role'] === 'admin' && isset($_POST['role'])) {
+            if ($_SESSION['user_role'] === 'admin' && isset($_POST['user_role'])) {
                 $sql .= ", role = ?";
-                $params[] = $_POST['role'];
+                $params[] = $_POST['user_role'];
             }
             
             // Завершение SQL запроса
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             
             // Проверка прав
-            if ($_SESSION['role'] !== 'admin') {
+            if ($_SESSION['user_role'] !== 'admin') {
                 header('Location: users.php?error=access');
                 exit();
             }
@@ -201,16 +201,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             header('Content-Type: application/json');
             
             // Проверка прав
-            if ($_SESSION['role'] !== 'admin') {
+            if ($_SESSION['user_role'] !== 'admin') {
                 exit(json_encode(['success' => false, 'message' => 'Недостаточно прав']));
             }
             
-            if (empty($_POST['user_id']) || empty($_POST['role'])) {
+            if (empty($_POST['user_id']) || empty($_POST['user_role'])) {
                 exit(json_encode(['success' => false, 'message' => 'Неверные параметры']));
             }
             
             $userId = (int)$_POST['user_id'];
-            $role = $_POST['role'];
+            $role = $_POST['user_role'];
             
             // Проверка допустимости роли
             if (!in_array($role, ['admin', 'manager', 'user'])) {
@@ -241,7 +241,7 @@ $perPage = 10;
 $offset = ($page - 1) * $perPage;
 
 // Получение параметров фильтрации
-$roleFilter = isset($_GET['role']) ? $_GET['role'] : '';
+$roleFilter = isset($_GET['user_role']) ? $_GET['user_role'] : '';
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 $searchFilter = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -502,7 +502,7 @@ include 'includes/header.php';
                             <td><?= htmlspecialchars($user['first_name']) ?></td>
                             <td><?= htmlspecialchars($user['last_name']) ?></td>
                             <td>
-                                <?php if ($_SESSION['role'] === 'admin' && $user['id'] != $_SESSION['user_id']): ?>
+                                <?php if ($_SESSION['user_role'] === 'admin' && $user['id'] != $_SESSION['user_id']): ?>
                                 <select class="form-select form-select-sm role-select" data-user-id="<?= $user['id'] ?>">
                                     <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>Пользователь</option>
                                     <option value="manager" <?= $user['role'] === 'manager' ? 'selected' : '' ?>>Менеджер</option>
@@ -528,7 +528,7 @@ include 'includes/header.php';
                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="<?= $user['id'] ?>">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <?php if ($_SESSION['role'] === 'admin' && $user['id'] != $_SESSION['user_id']): ?>
+                                <?php if ($_SESSION['user_role'] === 'admin' && $user['id'] != $_SESSION['user_id']): ?>
                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="<?= $user['id'] ?>">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -609,7 +609,7 @@ include 'includes/header.php';
                         <label for="add-role" class="form-label">Роль <span class="text-danger">*</span></label>
                         <select class="form-select" id="add-role" name="role" required>
                             <option value="user">Пользователь</option>
-                            <?php if ($_SESSION['role'] === 'admin'): ?>
+                            <?php if ($_SESSION['user_role'] === 'admin'): ?>
                             <option value="manager">Менеджер</option>
                             <option value="admin">Администратор</option>
                             <?php endif; ?>
@@ -669,7 +669,7 @@ include 'includes/header.php';
                         <input type="tel" class="form-control" id="edit-phone" name="phone">
                     </div>
                     
-                    <?php if ($_SESSION['role'] === 'admin'): ?>
+                    <?php if ($_SESSION['user_role'] === 'admin'): ?>
                     <div class="mb-3">
                         <label for="edit-role" class="form-label">Роль <span class="text-danger">*</span></label>
                         <select class="form-select" id="edit-role" name="role" required>

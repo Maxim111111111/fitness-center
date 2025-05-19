@@ -61,7 +61,7 @@ function isLoggedIn() {
 
 // Function to check if user has specific role
 function hasRole($role) {
-    return isset($_SESSION['role']) && $_SESSION['role'] === $role;
+    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === $role;
 }
 
 // Function to get current user data

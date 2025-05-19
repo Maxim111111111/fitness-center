@@ -13,7 +13,7 @@
             </div>
             <div class="flex-grow-1 ms-2">
                 <h6 class="mb-0 fs-6"><?= htmlspecialchars(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? '')) ?></h6>
-                <span class="text-muted small"><?= $_SESSION['role'] === 'admin' ? 'Администратор' : 'Менеджер' ?></span>
+                <span class="text-muted small"><?= (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') ? 'Администратор' : 'Менеджер' ?></span>
             </div>
         </div>
     </div>

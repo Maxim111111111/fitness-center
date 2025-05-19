@@ -133,38 +133,6 @@
           </div>
         </div>
       </div>
-        <section class="contacts">
-        <div class="container">
-          <div class="contacts__wrapper">
-            <div class="contacts__content">
-              <h2 class="contacts__title">Контакты</h2>
-              <div class="contacts__info">
-                <div class="contacts__item">
-                  <span class="contacts__label">Адрес:</span>
-                  <p class="contacts__text">
-                    г. Москва м. Ясенево, ул. Голубинская,<br />д. 16
-                  </p>
-                </div>
-                <div class="contacts__item">
-                  <span class="contacts__label">Телефон:</span>
-                  <a href="tel:+74954816060" class="contacts__text"
-                    >+7 (495) 481-60-60</a
-                  >
-                </div>
-                <div class="contacts__item">
-                  <span class="contacts__label">E-mail:</span>
-                  <a href="mailto:moreon@more-on.ru" class="contacts__text"
-                    >moreon@more-on.ru</a
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="contacts__map">
-              <div id="map" class="contacts__map-container"></div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
     <?php include 'footer.php'; ?>
     <script src="js/services.js"></script>

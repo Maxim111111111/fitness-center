@@ -1,0 +1,292 @@
+.team-tasks {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.team-tasks__title {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 120%;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.team-tasks__title-span {
+  color: #33b0aa;
+}
+
+.team-tasks__description {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 140%;
+  margin-bottom: 50px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.team-member {
+  margin-bottom: 60px;
+  background: rgba(0, 16, 15, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(50, 221, 212, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.team-member::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at top right,
+    rgba(50, 221, 212, 0.1),
+    transparent 60%
+  );
+  z-index: -1;
+}
+
+.team-member__name {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 120%;
+  margin-bottom: 15px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.team-member__role {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.task-category {
+  margin-bottom: 35px;
+}
+
+.task-category__title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #32ddd4;
+  border-bottom: 1px solid rgba(50, 221, 212, 0.3);
+  padding-bottom: 10px;
+}
+
+.tasks-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.task-item {
+  background: rgba(50, 221, 212, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(50, 221, 212, 0.1);
+}
+
+.task-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(50, 221, 212, 0.15);
+  background: rgba(50, 221, 212, 0.1);
+}
+
+.task-item__title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.task-item__days {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  display: inline-block;
+  background: rgba(50, 221, 212, 0.1);
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.timeline {
+  margin-top: 80px;
+  padding-top: 50px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline__title {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  margin-bottom: 40px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.timeline__title-span {
+  color: #33b0aa;
+}
+
+.timeline__container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 15px;
+  margin-bottom: 50px;
+}
+
+.timeline__day {
+  background: rgba(50, 221, 212, 0.05);
+  border-radius: 12px;
+  padding: 15px 10px;
+  text-align: center;
+  border: 1px solid rgba(50, 221, 212, 0.1);
+}
+
+.timeline__day-number {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #32ddd4;
+}
+
+.timeline__day-tasks {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  line-height: 140%;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.team-member__icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(50, 221, 212, 0.3);
+}
+
+.team-tasks-button {
+  display: block;
+  width: 240px;
+  margin: 40px auto 0;
+  padding: 16px 32px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 120%;
+  color: #ffffff;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0px 4px 24px 0px rgba(40, 176, 169, 0.2);
+}
+
+.team-tasks-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(50, 221, 212, 0.3);
+}
+
+.team-member--lead {
+  border-left: 3px solid #32ddd4;
+}
+
+.team-member--frontend {
+  border-left: 3px solid #ff7b25;
+}
+
+.team-member--backend {
+  border-left: 3px solid #9c47fc;
+}
+
+.team-member--lead .team-member__icon {
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+}
+
+.team-member--frontend .team-member__icon {
+  background: linear-gradient(180deg, #ff7b25 0%, #cc5a0f 100%);
+}
+
+.team-member--backend .team-member__icon {
+  background: linear-gradient(180deg, #9c47fc 0%, #7132bd 100%);
+}
+
+@media (max-width: 768px) {
+  .team-tasks__title {
+    font-size: 32px;
+  }
+
+  .team-tasks__description {
+    font-size: 16px;
+  }
+
+  .tasks-list {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline__container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .team-member {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-tasks__title {
+    font-size: 28px;
+  }
+
+  .timeline__container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .timeline__day {
+    padding: 10px 5px;
+  }
+
+  .timeline__day-number {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .timeline__day-tasks {
+    font-size: 10px;
+  }
+}

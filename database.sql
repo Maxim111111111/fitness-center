@@ -471,3 +471,468 @@ VALUES
         'System',
         TRUE
     );
+
+-- Добавление специализаций для тренеров
+INSERT INTO
+    specializations (name, description)
+VALUES
+    (
+        'Силовой тренинг',
+        'Работа с весами для набора мышечной массы и силы'
+    ),
+    (
+        'Кардиотренировки',
+        'Упражнения для укрепления сердечно-сосудистой системы'
+    ),
+    ('Йога', 'Комплекс упражнений для тела и ума'),
+    (
+        'Растяжка',
+        'Упражнения на гибкость и подвижность суставов'
+    ),
+    (
+        'Кроссфит',
+        'Высокоинтенсивные функциональные тренировки'
+    ),
+    ('Бокс', 'Техники и тренировки по боксу'),
+    (
+        'Танцевальные программы',
+        'Фитнес с элементами танца'
+    ),
+    (
+        'Пилатес',
+        'Система упражнений для развития мышц тела'
+    );
+
+-- Добавление тренеров (сначала пользователи, затем тренеры)
+-- Тренер 1
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'ivan.petrov@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Иван',
+        'Петров',
+        '+7 (999) 123-45-67',
+        'male',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        10,
+        'Профессиональный тренер с многолетним опытом работы. Специализируется на силовом тренинге и коррекции фигуры.',
+        'images/trainers/trainer-1.jpg',
+        'Мастер спорта по пауэрлифтингу, призер чемпионата России 2018',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 1);
+
+INSERT INTO
+    trainer_education (
+        trainer_id,
+        institution,
+        degree,
+        field_of_study,
+        start_date,
+        end_date
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        'Российский Государственный Университет Физической Культуры',
+        'Бакалавр',
+        'Физическая культура',
+        '2008-09-01',
+        '2012-06-30'
+    );
+
+-- Тренер 2
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'elena.smirnova@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Елена',
+        'Смирнова',
+        '+7 (999) 234-56-78',
+        'female',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        5,
+        'Сертифицированный тренер по йоге и пилатесу. Помогает клиентам достичь гармонии тела и духа.',
+        'images/trainers/trainer-2.jpg',
+        'Сертифицированный инструктор по йоге международного класса',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 3);
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 8);
+
+-- Тренер 3
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'sergey.kozlov@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Сергей',
+        'Козлов',
+        '+7 (999) 345-67-89',
+        'male',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        8,
+        'Тренер по кроссфиту и функциональным тренировкам. Специализируется на высокоинтенсивных тренировках.',
+        'images/trainers/trainer-3.jpg',
+        'Победитель региональных соревнований по кроссфиту 2019, 2020',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 5);
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 2);
+
+-- Тренер 4
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'anna.ivanova@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Анна',
+        'Иванова',
+        '+7 (999) 456-78-90',
+        'female',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        6,
+        'Тренер по танцевальным направлениям и растяжке. Поможет развить гибкость и грацию.',
+        'images/trainers/trainer-4.jpg',
+        'Хореограф-постановщик, участница танцевальных шоу',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 7);
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 4);
+
+-- Тренер 5
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'dmitry.sokolov@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Дмитрий',
+        'Соколов',
+        '+7 (999) 567-89-01',
+        'male',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        12,
+        'Опытный тренер по боксу и ММА. Научит правильной технике и дисциплине.',
+        'images/trainers/trainer-5.jpg',
+        'Мастер спорта по боксу, тренер национальной сборной 2015-2017',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 6);
+
+-- Тренер 6
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'maria.kuznetsova@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Мария',
+        'Кузнецова',
+        '+7 (999) 678-90-12',
+        'female',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        4,
+        'Специалист по кардиотренировкам и снижению веса. Поможет достичь желаемой формы.',
+        'images/trainers/trainer-6.jpg',
+        'Сертифицированный нутрициолог, специалист по снижению веса',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 2);
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 1);
+
+-- Тренер 7
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'alexey.morozov@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Алексей',
+        'Морозов',
+        '+7 (999) 789-01-23',
+        'male',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        9,
+        'Тренер по функциональным тренировкам и реабилитации. Помогает восстановиться после травм.',
+        'images/trainers/trainer-7.jpg',
+        'Физиотерапевт, специалист по спортивной реабилитации',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 1);
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 4);
+
+-- Тренер 8
+INSERT INTO
+    users (
+        email,
+        password_hash,
+        role,
+        first_name,
+        last_name,
+        phone,
+        gender,
+        is_active
+    )
+VALUES
+    (
+        'natalia.orlova@example.com',
+        '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.',
+        'user',
+        'Наталья',
+        'Орлова',
+        '+7 (999) 890-12-34',
+        'female',
+        TRUE
+    );
+
+INSERT INTO
+    trainers (
+        user_id,
+        experience_years,
+        bio,
+        photo_url,
+        achievements,
+        is_active
+    )
+VALUES
+    (
+        LAST_INSERT_ID (),
+        7,
+        'Мастер групповых программ и пилатеса. Создает индивидуальный подход к каждому клиенту.',
+        'images/trainers/trainer-8.jpg',
+        'Победитель фитнес-конвенций, автор методики "Осознанный пилатес"',
+        TRUE
+    );
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 8);
+
+INSERT INTO
+    trainer_specializations (trainer_id, specialization_id)
+VALUES
+    (LAST_INSERT_ID (), 7);

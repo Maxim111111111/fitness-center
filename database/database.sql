@@ -102,3 +102,36 @@ CREATE TABLE
         CONSTRAINT `training_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
         CONSTRAINT `training_sessions_ibfk_2` FOREIGN KEY (`trainer_id`) REFERENCES `trainers` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Создаем таблицу для отзывов
+CREATE TABLE
+    IF NOT EXISTS `reviews` (
+        `id` int (11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(100) NOT NULL,
+        `email` varchar(100) NOT NULL,
+        `rating` int (1) NOT NULL,
+        `text` text NOT NULL,
+        `status` enum ('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+        `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+        `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+        PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Вставляем демо-данные для отзывов, если таблица пуста
+INSERT INTO
+    `reviews` (`name`, `email`, `rating`, `text`, `status`)
+SELECT
+    'Ольга',
+    'olga@example.com',
+    5,
+    'Мореон Фитнес – семейный премиум фитнес-клуб с бассейном, 40 видами групповых программ, детским клубом, школой единоборств и скалодромом. Оборудование тренажерного зала поставляет эксклюзивный партнер',
+    'approved'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            `reviews`
+        LIMIT
+            1
+    );

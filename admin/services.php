@@ -3,7 +3,7 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -13,18 +13,211 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     switch ($_POST['action']) {
         case 'add':
             // Код для добавления услуги
+            if (empty($_POST['name']) || !isset($_POST['price']) || empty($_POST['duration'])) {
+                header('Location: services.php?error=add');
+                exit();
+            }
+            
+            // Подготовка данных
+            $name = $_POST['name'];
+            $description = $_POST['description'] ?? '';
+            $price = (float)$_POST['price'];
+            $duration = (int)$_POST['duration'];
+            $max_participants = !empty($_POST['max_participants']) ? (int)$_POST['max_participants'] : null;
+            $is_active = isset($_POST['is_active']) ? 1 : 0;
+            
+            // Обработка загрузки изображения
+            $image_url = '';
+            if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+                $upload_dir = '../assets/img/services/';
+                
+                // Проверяем, существует ли директория, если нет - создаем
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                
+                $file_name = 'service-' . time() . '-' . basename($_FILES['image']['name']);
+                $target_file = $upload_dir . $file_name;
+                
+                // Проверка типа файла
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (in_array($_FILES['image']['type'], $allowed_types)) {
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                        $image_url = 'assets/img/services/' . $file_name;
+                    }
+                }
+            }
+            
+            try {
+                $stmt = $pdo->prepare("
+                    INSERT INTO services (name, description, duration, price, max_participants, is_active, image_url, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+                ");
+                $stmt->execute([
+                    $name,
+                    $description,
+                    $duration,
+                    $price,
+                    $max_participants,
+                    $is_active,
+                    $image_url
+                ]);
+                
+                header('Location: services.php?success=add');
+                exit();
+            } catch (PDOException $e) {
+                error_log("Database error: " . $e->getMessage());
+                header('Location: services.php?error=add');
+                exit();
+            }
             break;
             
         case 'edit':
             // Код для редактирования услуги
+            if (empty($_POST['service_id']) || empty($_POST['name']) || !isset($_POST['price']) || empty($_POST['duration'])) {
+                header('Location: services.php?error=edit');
+                exit();
+            }
+            
+            // Подготовка данных
+            $id = (int)$_POST['service_id'];
+            $name = $_POST['name'];
+            $description = $_POST['description'] ?? '';
+            $price = (float)$_POST['price'];
+            $duration = (int)$_POST['duration'];
+            $max_participants = !empty($_POST['max_participants']) ? (int)$_POST['max_participants'] : null;
+            $is_active = isset($_POST['is_active']) ? 1 : 0;
+            
+            // Получаем текущее изображение
+            $currentImageStmt = $pdo->prepare("SELECT image_url FROM services WHERE id = ?");
+            $currentImageStmt->execute([$id]);
+            $current_image = $currentImageStmt->fetchColumn();
+            
+            // Обработка изображения
+            $image_url = $current_image;
+            
+            // Если установлен флаг удаления изображения
+            if (isset($_POST['delete_image']) && $_POST['delete_image'] == 1) {
+                // Удаляем файл, если он существует
+                if (!empty($current_image) && file_exists('../' . $current_image)) {
+                    unlink('../' . $current_image);
+                }
+                $image_url = '';
+            }
+            
+            // Если загружается новое изображение
+            if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+                $upload_dir = '../assets/img/services/';
+                
+                // Проверяем, существует ли директория, если нет - создаем
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                
+                $file_name = 'service-' . time() . '-' . basename($_FILES['image']['name']);
+                $target_file = $upload_dir . $file_name;
+                
+                // Проверка типа файла
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (in_array($_FILES['image']['type'], $allowed_types)) {
+                    // Удаляем старое изображение, если оно существует
+                    if (!empty($current_image) && file_exists('../' . $current_image)) {
+                        unlink('../' . $current_image);
+                    }
+                    
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                        $image_url = 'assets/img/services/' . $file_name;
+                    }
+                }
+            }
+            
+            try {
+                $stmt = $pdo->prepare("
+                    UPDATE services 
+                    SET name = ?, description = ?, duration = ?, price = ?, 
+                        max_participants = ?, is_active = ?, image_url = ?, updated_at = NOW()
+                    WHERE id = ?
+                ");
+                $stmt->execute([
+                    $name,
+                    $description,
+                    $duration,
+                    $price,
+                    $max_participants,
+                    $is_active,
+                    $image_url,
+                    $id
+                ]);
+                
+                header('Location: services.php?success=edit');
+                exit();
+            } catch (PDOException $e) {
+                error_log("Database error: " . $e->getMessage());
+                header('Location: services.php?error=edit');
+                exit();
+            }
             break;
             
         case 'delete':
             // Код для удаления услуги
+            if (empty($_POST['service_id'])) {
+                header('Location: services.php?error=delete');
+                exit();
+            }
+            
+            $id = (int)$_POST['service_id'];
+            
+            try {
+                // Получаем информацию об изображении
+                $imageStmt = $pdo->prepare("SELECT image_url FROM services WHERE id = ?");
+                $imageStmt->execute([$id]);
+                $image_url = $imageStmt->fetchColumn();
+                
+                // Проверяем, используется ли услуга в тренировках
+                $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM training_sessions WHERE service_id = ?");
+                $checkStmt->execute([$id]);
+                if ($checkStmt->fetchColumn() > 0) {
+                    header('Location: services.php?error=delete&message=in_use');
+                    exit();
+                }
+                
+                $stmt = $pdo->prepare("DELETE FROM services WHERE id = ?");
+                $stmt->execute([$id]);
+                
+                // Удаляем изображение, если оно существует
+                if (!empty($image_url) && file_exists('../' . $image_url)) {
+                    unlink('../' . $image_url);
+                }
+                
+                header('Location: services.php?success=delete');
+                exit();
+            } catch (PDOException $e) {
+                error_log("Database error: " . $e->getMessage());
+                header('Location: services.php?error=delete');
+                exit();
+            }
             break;
             
         case 'change_status':
-            // Код для изменения статуса услуги
+            // Обработка AJAX запроса на изменение статуса
+            header('Content-Type: application/json');
+            
+            if (empty($_POST['service_id']) || !isset($_POST['is_active'])) {
+                exit(json_encode(['success' => false, 'message' => 'Неверные параметры']));
+            }
+            
+            $id = (int)$_POST['service_id'];
+            $isActive = (int)$_POST['is_active'];
+            
+            try {
+                $stmt = $pdo->prepare("UPDATE services SET is_active = ? WHERE id = ?");
+                $stmt->execute([$isActive, $id]);
+                
+                exit(json_encode(['success' => true, 'message' => 'Статус успешно изменен']));
+            } catch (PDOException $e) {
+                error_log("Database error: " . $e->getMessage());
+                exit(json_encode(['success' => false, 'message' => 'Ошибка при изменении статуса']));
+            }
             break;
     }
 }
@@ -115,6 +308,7 @@ include 'includes/header.php';
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Изображение</th>
                             <th>Название</th>
                             <th>Описание</th>
                             <th>Длительность</th>
@@ -128,11 +322,20 @@ include 'includes/header.php';
                         <?php foreach ($services as $service): ?>
                         <tr>
                             <td><?= htmlspecialchars($service['id']) ?></td>
+                            <td>
+                                <?php if(!empty($service['image_url'])): ?>
+                                    <img src="../<?= htmlspecialchars($service['image_url']) ?>" alt="<?= htmlspecialchars($service['name']) ?>" class="service-thumbnail">
+                                <?php else: ?>
+                                    <div class="service-thumbnail no-image">
+                                        <i class="fas fa-dumbbell"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
                             <td><?= htmlspecialchars($service['name']) ?></td>
                             <td>
                                 <?php 
                                 // Ограничиваем описание до 50 символов
-                                $description = $service['description'];
+                                $description = $service['description'] ?? '';
                                 echo htmlspecialchars(strlen($description) > 50 ? substr($description, 0, 50) . '...' : $description);
                                 ?>
                             </td>
@@ -197,7 +400,7 @@ include 'includes/header.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
-                <form id="addServiceForm" action="services.php" method="post">
+                <form id="addServiceForm" action="services.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add">
                     
                     <div class="mb-3">
@@ -227,6 +430,14 @@ include 'includes/header.php';
                         <small class="form-text text-muted">Оставьте пустым для неограниченного количества участников</small>
                     </div>
                     
+                    <div class="mb-3">
+                        <label for="add-image" class="form-label">Изображение</label>
+                        <input type="file" class="form-control" id="add-image" name="image" accept="image/*">
+                        <div class="image-preview mt-2" id="add-image-preview">
+                            <div class="no-image"><i class="fas fa-image"></i></div>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="add-is-active" name="is_active" value="1" checked>
                         <label class="form-check-label" for="add-is-active">Активная</label>
@@ -250,7 +461,7 @@ include 'includes/header.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
-                <form id="editServiceForm" action="services.php" method="post">
+                <form id="editServiceForm" action="services.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="edit">
                     <input type="hidden" name="service_id" id="edit-service-id">
                     
@@ -281,6 +492,20 @@ include 'includes/header.php';
                         <small class="form-text text-muted">Оставьте пустым для неограниченного количества участников</small>
                     </div>
                     
+                    <div class="mb-3">
+                        <label for="edit-image" class="form-label">Изображение</label>
+                        <input type="file" class="form-control" id="edit-image" name="image" accept="image/*">
+                        
+                        <div class="image-preview mt-2" id="edit-image-preview">
+                            <div class="no-image"><i class="fas fa-image"></i></div>
+                        </div>
+                        
+                        <div class="form-check mt-2" id="edit-delete-image-container" style="display: none;">
+                            <input type="checkbox" class="form-check-input" id="edit-delete-image" name="delete_image" value="1">
+                            <label class="form-check-label" for="edit-delete-image">Удалить текущее изображение</label>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="edit-is-active" name="is_active" value="1">
                         <label class="form-check-label" for="edit-is-active">Активная</label>
@@ -300,24 +525,193 @@ include 'includes/header.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteServiceModalLabel">Удалить услугу</h5>
+                <h5 class="modal-title" id="deleteServiceModalLabel">Подтверждение удаления</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
                 <p>Вы уверены, что хотите удалить эту услугу? Это действие нельзя отменить.</p>
-                <form id="deleteServiceForm" action="services.php" method="post">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="service_id" id="delete-service-id">
-                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="submit" form="deleteServiceForm" class="btn btn-danger">Удалить</button>
+                <form action="services.php" method="post">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="service_id" id="delete-service-id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<script src="js/services.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка переключения статуса
+    document.querySelectorAll('.status-toggle').forEach(function(toggle) {
+        toggle.addEventListener('change', function() {
+            const serviceId = this.dataset.serviceId;
+            const isActive = this.checked ? 1 : 0;
+            
+            fetch('services.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=change_status&service_id=${serviceId}&is_active=${isActive}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message);
+                    this.checked = !this.checked; // Возвращаем состояние переключателя
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Произошла ошибка при изменении статуса');
+                this.checked = !this.checked; // Возвращаем состояние переключателя
+            });
+        });
+    });
+    
+    // Обработка предпросмотра изображения при добавлении
+    document.getElementById('add-image').addEventListener('change', function() {
+        const file = this.files[0];
+        const preview = document.getElementById('add-image-preview');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" class="img-fluid">`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.innerHTML = `<div class="no-image"><i class="fas fa-image"></i></div>`;
+        }
+    });
+    
+    // Обработка загрузки данных в форму редактирования
+    document.querySelectorAll('.edit-service').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const serviceId = this.dataset.serviceId;
+            
+            fetch(`get_service.php?id=${serviceId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const service = data.service;
+                    
+                    // Заполняем поля формы
+                    document.getElementById('edit-service-id').value = service.id;
+                    document.getElementById('edit-name').value = service.name;
+                    document.getElementById('edit-description').value = service.description || '';
+                    document.getElementById('edit-duration').value = service.duration;
+                    document.getElementById('edit-price').value = service.price;
+                    document.getElementById('edit-max-participants').value = service.max_participants || '';
+                    document.getElementById('edit-is-active').checked = service.is_active == 1;
+                    
+                    // Отображаем текущее изображение
+                    const imagePreview = document.getElementById('edit-image-preview');
+                    const deleteImageContainer = document.getElementById('edit-delete-image-container');
+                    
+                    if (service.image_url) {
+                        imagePreview.innerHTML = `<img src="../${service.image_url}" class="img-fluid">`;
+                        deleteImageContainer.style.display = 'block';
+                    } else {
+                        imagePreview.innerHTML = `<div class="no-image"><i class="fas fa-image"></i></div>`;
+                        deleteImageContainer.style.display = 'none';
+                    }
+                    
+                    // Сбрасываем поле выбора файла и чекбокс удаления
+                    document.getElementById('edit-image').value = '';
+                    document.getElementById('edit-delete-image').checked = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при загрузке данных услуги');
+            });
+        });
+    });
+    
+    // Обработка предпросмотра изображения при редактировании
+    document.getElementById('edit-image').addEventListener('change', function() {
+        const file = this.files[0];
+        const preview = document.getElementById('edit-image-preview');
+        const deleteImageContainer = document.getElementById('edit-delete-image-container');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" class="img-fluid">`;
+            };
+            reader.readAsDataURL(file);
+            
+            // Проверяем, было ли изображение раньше
+            if (deleteImageContainer.style.display === 'block') {
+                document.getElementById('edit-delete-image').checked = false;
+            }
+        }
+    });
+    
+    // Обработка удаления услуги
+    document.querySelectorAll('[data-bs-target="#deleteServiceModal"]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const serviceId = this.dataset.serviceId;
+            document.getElementById('delete-service-id').value = serviceId;
+        });
+    });
+});
+</script>
+
+<style>
+.service-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.service-thumbnail.no-image {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 1.5rem;
+}
+
+.image-preview {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.image-preview .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-size: 2rem;
+}
+
+.action-buttons .btn {
+    margin-right: 5px;
+}
+</style>
 
 <?php include 'includes/footer.php'; ?> 

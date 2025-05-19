@@ -5,8 +5,11 @@ require_once('database/config.php');
 
 // Check if user is already logged in
 if (isset($_SESSION['user_id']) && isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
-    // Redirect to profile page
-    header("Location: profile.php");
+    if ($_SESSION['user_role'] === 'admin' || $_SESSION['user_role'] === 'manager') {
+        header("Location: admin/index.php");
+    } else {
+        header("Location: profile.php");
+    }
     exit();
 }
 
@@ -70,8 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     setcookie('remember_token', $token, strtotime('+30 days'), '/', '', false, true);
                 }
                 
-                // Redirect to profile page
-                header("Location: profile.php");
+                // Redirect based on role
+                if ($_SESSION['user_role'] === 'admin' || $_SESSION['user_role'] === 'manager') {
+                    header("Location: admin/index.php");
+                } else {
+                    header("Location: profile.php");
+                }
                 exit();
             } else {
                 $error = 'Неверный email или пароль';
@@ -113,8 +120,12 @@ if (empty($error) && !isset($_SESSION['user_id']) && isset($_COOKIE['remember_to
             $tokenUpdateStmt = $pdo->prepare("UPDATE api_tokens SET last_used_at = NOW() WHERE token = ?");
             $tokenUpdateStmt->execute([$token]);
             
-            // Redirect to profile page
-            header("Location: profile.php");
+            // Redirect based on role
+            if ($_SESSION['user_role'] === 'admin' || $_SESSION['user_role'] === 'manager') {
+                header("Location: admin/index.php");
+            } else {
+                header("Location: profile.php");
+            }
             exit();
         } else {
             // Invalid or expired token, clear the cookie

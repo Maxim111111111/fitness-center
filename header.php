@@ -11,6 +11,10 @@ if (!function_exists('isLoggedIn')) {
 
 // Get user details if logged in
 $userName = $_SESSION['user_name'] ?? 'Пользователь';
+$isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'admin' || $_SESSION['user_role'] === 'manager');
+
+// Get current page for active menu if not set
+$currentPage = $currentPage ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -26,6 +30,9 @@ $userName = $_SESSION['user_name'] ?? 'Пользователь';
     <link rel="stylesheet" href="style/reset.css" />
     <link rel="stylesheet" href="style/tailwind.css" />
     <link rel="stylesheet" href="style/animations.css" />
+    <?php if ($currentPage === 'team_tasks'): ?>
+    <link rel="stylesheet" href="style/team_tasks.css" />
+    <?php endif; ?>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
@@ -82,25 +89,30 @@ $userName = $_SESSION['user_name'] ?? 'Пользователь';
             <div class="header__menu">
               <ul class="header__menu-list">
                 <li class="header__menu-item">
-                  <a href="./about.php" class="header__menu-link">О нас</a>
+                  <a href="./about.php" class="header__menu-link <?php echo $currentPage === 'about' ? 'active' : ''; ?>">О нас</a>
                 </li>
                 <li class="header__menu-item">
-                  <a href="./services.php" class="header__menu-link">Услуги</a>
+                  <a href="./services.php" class="header__menu-link <?php echo $currentPage === 'services' ? 'active' : ''; ?>">Услуги</a>
                 </li>
                 <li class="header__menu-item">
-                  <a href="./coach.php" class="header__menu-link">Тренеры</a>
+                  <a href="./coach.php" class="header__menu-link <?php echo $currentPage === 'coach' ? 'active' : ''; ?>">Тренеры</a>
                 </li>
                 <li class="header__menu-item">
-                  <a href="./training_session.php" class="header__menu-link"
+                  <a href="./training_session.php" class="header__menu-link <?php echo $currentPage === 'training_session' ? 'active' : ''; ?>"
                     >Запись на тренировку</a
                   >
                 </li>
                 <li class="header__menu-item">
-                  <a href="./reviews.php" class="header__menu-link">Отзывы</a>
+                  <a href="./reviews.php" class="header__menu-link <?php echo $currentPage === 'reviews' ? 'active' : ''; ?>">Отзывы</a>
                 </li>
                 <li class="header__menu-item">
-                  <a href="./contacts.php" class="header__menu-link">Контакты</a>
+                  <a href="./contacts.php" class="header__menu-link <?php echo $currentPage === 'contacts' ? 'active' : ''; ?>">Контакты</a>
                 </li>
+                <?php if ($isAdmin): ?>
+                <li class="header__menu-item">
+                  <a href="./team_tasks.php" class="header__menu-link <?php echo $currentPage === 'team_tasks' ? 'active' : ''; ?>">Задачи команды</a>
+                </li>
+                <?php endif; ?>
               </ul>
             </div>
             <div class="header__auth">
@@ -122,6 +134,12 @@ $userName = $_SESSION['user_name'] ?? 'Пользователь';
                         <img src="assets/svg/user.svg" alt="Личный кабинет" class="header__auth-link-icon">
                         Личный кабинет
                       </a>
+                      <?php if ($isAdmin): ?>
+                      <a href="./admin/index.php" class="header__auth-link">
+                        <img src="assets/svg/settings.svg" alt="Админ панель" class="header__auth-link-icon">
+                        Админ панель
+                      </a>
+                      <?php endif; ?>
                       <a href="./profile.php?logout=1" class="header__auth-link header__auth-link--logout">
                         <img src="assets/svg/logout.svg" alt="Выход" class="header__auth-link-icon">
                         Выйти

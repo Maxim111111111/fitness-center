@@ -3,7 +3,7 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -19,7 +19,7 @@ $output = fopen('php://output', 'w');
 fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
 // Получение параметров фильтрации, если они переданы
-$roleFilter = isset($_GET['role']) ? $_GET['role'] : '';
+$roleFilter = isset($_GET['user_role']) ? $_GET['user_role'] : '';
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 $searchFilter = isset($_GET['search']) ? $_GET['search'] : '';
 

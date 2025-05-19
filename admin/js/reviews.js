@@ -19,6 +19,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Обработчик отклонения отзыва
+  const rejectButtons = document.querySelectorAll(".reject-review");
+  rejectButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const reviewId = this.getAttribute("data-review-id");
+      document.getElementById("reject-review-id").value = reviewId;
+      document.getElementById("rejectReviewForm").submit();
+    });
+  });
+
   // Обработчик одобрения из модального окна
   document
     .querySelector(".approve-from-modal")
@@ -26,6 +36,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const reviewId = document.getElementById("view-id").textContent;
       document.getElementById("approve-review-id").value = reviewId;
       document.getElementById("approveReviewForm").submit();
+    });
+
+  // Обработчик отклонения из модального окна
+  document
+    .querySelector(".reject-from-modal")
+    .addEventListener("click", function () {
+      const reviewId = document.getElementById("view-id").textContent;
+      document.getElementById("reject-review-id").value = reviewId;
+      document.getElementById("rejectReviewForm").submit();
     });
 
   // Обработчик открытия модального окна удаления
@@ -78,8 +97,8 @@ function loadReviewDetails(reviewId) {
 function displayReviewDetails(review) {
   // Заполняем поля модального окна
   document.getElementById("view-id").textContent = review.id;
-  document.getElementById("view-user").textContent =
-    review.user_first_name + " " + review.user_last_name;
+  document.getElementById("view-name").textContent = review.name;
+  document.getElementById("view-email").textContent = review.email;
 
   // Отображение рейтинга звездами
   const ratingContainer = document.getElementById("view-rating");
@@ -92,52 +111,46 @@ function displayReviewDetails(review) {
   }
 
   // Отображение текста отзыва
-  document.getElementById("view-comment").textContent = review.comment;
-
-  // Тип отзыва
-  let typeHtml = "";
-  if (review.trainer_id) {
-    typeHtml = `<span class="badge bg-info">Тренер: ${review.trainer_first_name} ${review.trainer_last_name}</span>`;
-  } else if (review.service_id) {
-    typeHtml = `<span class="badge bg-success">Услуга: ${review.service_name}</span>`;
-  } else {
-    typeHtml = '<span class="badge bg-secondary">Общий</span>';
-  }
-  document.getElementById("view-type").innerHTML = typeHtml;
+  document.getElementById("view-text").textContent = review.text;
 
   // Дата создания
   const createdDate = new Date(review.created_at);
   document.getElementById("view-created").textContent =
     createdDate.toLocaleString("ru-RU");
 
-  // Статус
-  const statusElement = document.getElementById("view-status");
-  if (review.is_approved) {
-    statusElement.className = "badge bg-success";
-    statusElement.textContent = "Одобрен";
+  // Отображение даты обновления, если есть
+  const updatedContainer = document.getElementById("view-updated-container");
+  if (review.updated_at && review.updated_at !== review.created_at) {
+    updatedContainer.style.display = "block";
+    const updatedDate = new Date(review.updated_at);
+    document.getElementById("view-updated").textContent =
+      updatedDate.toLocaleString("ru-RU");
   } else {
-    statusElement.className = "badge bg-warning text-dark";
-    statusElement.textContent = "Ожидает одобрения";
+    updatedContainer.style.display = "none";
   }
 
-  // Информация о модераторе
-  const moderatorContainer = document.getElementById(
-    "view-moderator-container"
-  );
-  if (review.is_approved && review.moderator_first_name) {
-    moderatorContainer.style.display = "block";
-    document.getElementById(
-      "view-moderator"
-    ).textContent = `${review.moderator_first_name} ${review.moderator_last_name}`;
+  // Статус
+  const statusElement = document.getElementById("view-status");
+  if (review.status === "approved") {
+    statusElement.className = "badge bg-success";
+    statusElement.textContent = "Одобрен";
+  } else if (review.status === "rejected") {
+    statusElement.className = "badge bg-danger";
+    statusElement.textContent = "Отклонен";
   } else {
-    moderatorContainer.style.display = "none";
+    statusElement.className = "badge bg-warning text-dark";
+    statusElement.textContent = "Ожидает проверки";
   }
 
   // Управление кнопками в зависимости от статуса
   const approveButton = document.getElementById("modal-approve-btn");
-  if (review.is_approved) {
-    approveButton.style.display = "none";
-  } else {
+  const rejectButton = document.getElementById("modal-reject-btn");
+
+  if (review.status === "pending") {
     approveButton.style.display = "inline-block";
+    rejectButton.style.display = "inline-block";
+  } else {
+    approveButton.style.display = "none";
+    rejectButton.style.display = "none";
   }
 }

@@ -3,8 +3,9 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
-    exit(json_encode(['success' => false, 'message' => 'Доступ запрещен']));
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
+    header('Location: ../login.php');
+    exit();
 }
 
 header('Content-Type: application/json');

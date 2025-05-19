@@ -3,7 +3,7 @@ session_start();
 require_once('../database/config.php');
 
 // Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -26,7 +26,7 @@ $stmt = $pdo->query("SELECT COUNT(*) FROM training_sessions WHERE CONCAT(session
 $upcomingSessions = $stmt->fetchColumn();
 
 // Ожидающие отзывы
-$stmt = $pdo->query("SELECT COUNT(*) FROM reviews WHERE is_approved = 0");
+$stmt = $pdo->query("SELECT COUNT(*) FROM reviews WHERE status = 'pending'");
 $pendingReviews = $stmt->fetchColumn();
 
 // Тренировки на сегодня
@@ -59,10 +59,8 @@ $recentUsers = $stmt->fetchAll();
 // Последние отзывы
 $stmt = $pdo->query("
     SELECT 
-        r.id, r.rating, r.comment, r.created_at, r.is_approved,
-        u.first_name as user_first_name, u.last_name as user_last_name
+        r.id, r.rating, r.text, r.created_at, r.status, r.name
     FROM reviews r
-    JOIN users u ON r.user_id = u.id
     ORDER BY r.created_at DESC
     LIMIT 5
 ");
@@ -216,18 +214,18 @@ include 'includes/header.php';
                                 <?php foreach ($recentReviews as $review): ?>
                                 <div class="list-group-item list-group-item-action p-2">
                                     <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1 fs-6"><?= htmlspecialchars(($review['user_first_name'] ?? '') . ' ' . ($review['user_last_name'] ?? '')) ?></h6>
+                                        <h6 class="mb-1 fs-6"><?= htmlspecialchars($review['name'] ?? '') ?></h6>
                                         <small class="text-muted"><?= date('d.m.Y H:i', strtotime($review['created_at'])) ?></small>
                                     </div>
                                     <div class="mb-1">
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
                                             <i class="fas fa-star <?= $i <= ($review['rating'] ?? 0) ? 'text-warning' : 'text-secondary' ?> small"></i>
                                         <?php endfor; ?>
-                                        <span class="badge <?= ($review['is_approved'] ?? false) ? 'bg-success' : 'bg-warning text-dark' ?> ms-2">
-                                            <?= ($review['is_approved'] ?? false) ? 'Одобрен' : 'На модерации' ?>
+                                        <span class="badge <?= ($review['status'] === 'approved') ? 'bg-success' : ($review['status'] === 'rejected' ? 'bg-danger' : 'bg-warning text-dark') ?> ms-2">
+                                            <?= ($review['status'] === 'approved') ? 'Одобрен' : ($review['status'] === 'rejected' ? 'Отклонен' : 'На модерации') ?>
                                         </span>
                                     </div>
-                                    <p class="mb-0 small text-truncate"><?= htmlspecialchars($review['comment'] ?? '') ?></p>
+                                    <p class="mb-0 small text-truncate"><?= htmlspecialchars($review['text'] ?? '') ?></p>
                                 </div>
                                 <?php endforeach; ?>
                             </div>
