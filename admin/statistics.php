@@ -2,11 +2,11 @@
 session_start();
 require_once('../database/config.php');
 
-// Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
-    header('Location: ../login.php');
-    exit();
-}
+
+require_once('includes/auth_check.php');
+
+// Check access for statistics
+checkAccess('statistics');
 
 // Получение периода для статистики
 $period = $_GET['period'] ?? 'month';

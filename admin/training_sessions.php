@@ -1,15 +1,14 @@
 <?php
 // Страница управления записями на тренировки
 session_start();
-
-// Проверка авторизации
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Подключение к базе данных
 require_once '../database/config.php';
+require_once 'includes/auth_check.php';
+
+// Check access for training sessions
+checkAccess('training_sessions');
+
+// Отладочная информация о текущем пользователе
+error_log("Current user: id=" . $_SESSION['user_id'] . ", role=" . $_SESSION['user_role']);
 
 // Обработка ajax запросов
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
@@ -26,13 +25,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $response = ['success' => false, 'message' => 'Недопустимый статус'];
         } else {
             try {
-                $stmt = $pdo->prepare("UPDATE training_sessions SET status = ?, updated_at = NOW() WHERE id = ?");
-                $stmt->execute([$status, $session_id]);
-                
-                if ($stmt->rowCount() > 0) {
-                    $response = ['success' => true, 'message' => 'Статус успешно обновлен'];
+                // If trainer role, make sure they can only update their own sessions
+                if ($_SESSION['user_role'] === 'trainer') {
+                    // Get trainer_id for this user
+                    $trainerStmt = $pdo->prepare("SELECT id FROM trainers WHERE user_id = ?");
+                    $trainerStmt->execute([$_SESSION['user_id']]);
+                    $trainerId = $trainerStmt->fetchColumn();
+                    
+                    // Отладочная информация
+                    error_log("Trainer filter: user_id=" . $_SESSION['user_id'] . ", trainer_id=" . ($trainerId ? $trainerId : 'not_found'));
+                    
+                    if (!$trainerId) {
+                        $response = ['success' => false, 'message' => 'У вас нет прав на изменение этой записи'];
+                        error_log("No trainer record found for user_id=" . $_SESSION['user_id']);
+                    } else {
+                        $stmt = $pdo->prepare("UPDATE training_sessions SET status = ?, updated_at = NOW() WHERE id = ? AND trainer_id = ?");
+                        $stmt->execute([$status, $session_id, $trainerId]);
+                        
+                        if ($stmt->rowCount() > 0) {
+                            $response = ['success' => true, 'message' => 'Статус успешно обновлен'];
+                        } else {
+                            $response = ['success' => false, 'message' => 'У вас нет прав на изменение этой записи или запись не найдена'];
+                        }
+                    }
                 } else {
-                    $response = ['success' => false, 'message' => 'Ошибка при обновлении статуса'];
+                    // Admin or manager can update any session
+                    $stmt = $pdo->prepare("UPDATE training_sessions SET status = ?, updated_at = NOW() WHERE id = ?");
+                    $stmt->execute([$status, $session_id]);
+                    
+                    if ($stmt->rowCount() > 0) {
+                        $response = ['success' => true, 'message' => 'Статус успешно обновлен'];
+                    } else {
+                        $response = ['success' => false, 'message' => 'Ошибка при обновлении статуса'];
+                    }
                 }
             } catch (PDOException $e) {
                 $response = ['success' => false, 'message' => 'Ошибка базы данных: ' . $e->getMessage()];
@@ -40,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
     
-    // Удаление записи
-    if ($_POST['action'] === 'delete' && isset($_POST['session_id'])) {
+    // Удаление записи (только для admin и manager)
+    if ($_POST['action'] === 'delete' && isset($_POST['session_id']) && $_SESSION['user_role'] !== 'trainer') {
         $session_id = intval($_POST['session_id']);
         
         try {
@@ -78,6 +103,26 @@ $date_to = isset($_GET['date_to']) ? $_GET['date_to'] : '';
 // Формируем SQL запрос с учетом фильтров
 $params = [];
 $where_conditions = [];
+
+// If user is trainer, restrict to only their sessions
+if ($_SESSION['user_role'] === 'trainer') {
+    // Get trainer ID for current user
+    $trainerStmt = $pdo->prepare("SELECT id FROM trainers WHERE user_id = ?");
+    $trainerStmt->execute([$_SESSION['user_id']]);
+    $trainerId = $trainerStmt->fetchColumn();
+    
+    // Отладочная информация
+    error_log("Trainer filter: user_id=" . $_SESSION['user_id'] . ", trainer_id=" . ($trainerId ? $trainerId : 'not_found'));
+    
+    if ($trainerId) {
+        $where_conditions[] = "ts.trainer_id = ?";
+        $params[] = $trainerId;
+    } else {
+        // If we can't find trainer ID for this user, show no results
+        $where_conditions[] = "1 = 0";
+        error_log("No trainer record found for user_id=" . $_SESSION['user_id']);
+    }
+}
 
 if (!empty($search)) {
     $where_conditions[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR CONCAT(u.first_name, ' ', u.last_name) LIKE ? OR t.first_name LIKE ? OR t.last_name LIKE ? OR CONCAT(t.first_name, ' ', t.last_name) LIKE ? OR s.name LIKE ?)";
@@ -117,6 +162,10 @@ $count_query = "SELECT COUNT(*) as total
                 JOIN services s ON ts.service_id = s.id 
                 $where_clause";
 
+// Отладочная информация о SQL-запросе и параметрах
+error_log("Count query: " . $count_query);
+error_log("Params: " . print_r($params, true));
+
 $count_stmt = $pdo->prepare($count_query);
 $count_stmt->execute($params);
 $total_records = $count_stmt->fetchColumn();
@@ -142,10 +191,17 @@ $query = "SELECT
           ORDER BY ts.session_date DESC, ts.start_time ASC
           LIMIT ?, ?";
 
+// Отладочная информация о SQL-запросе
+error_log("Query: " . $query);
+error_log("All params: " . print_r(array_merge($params, [$offset, $records_per_page]), true));
+
 $stmt = $pdo->prepare($query);
 $all_params = array_merge($params, [$offset, $records_per_page]);
 $stmt->execute($all_params);
 $result = $stmt->fetchAll();
+
+// Отладочная информация о результате запроса
+error_log("Result count: " . count($result));
 
 // Данные для выпадающих списков фильтрации
 $statuses = ['pending', 'confirmed', 'cancelled', 'completed'];
@@ -279,9 +335,11 @@ include 'includes/header.php';
                                         <button class="btn btn-sm btn-info view-session" data-bs-toggle="modal" data-bs-target="#viewSessionModal" data-session-id="<?php echo $row['id']; ?>">
                                             <i class="fas fa-eye"></i>
                                         </button>
+                                        <?php if ($_SESSION['user_role'] !== 'trainer'): ?>
                                         <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSessionModal" data-session-id="<?php echo $row['id']; ?>">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

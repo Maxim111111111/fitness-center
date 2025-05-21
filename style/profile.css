@@ -477,173 +477,196 @@
 
 /* Стили для вкладки абонемента */
 .subscription-card {
-  background: linear-gradient(
-    180deg,
-    rgba(40, 176, 169, 0.1) 0%,
-    rgba(0, 16, 15, 0.1) 100%
-  );
-  border: 1px solid rgba(40, 176, 169, 0.2);
-  border-radius: 16px;
-  padding: 25px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   margin-bottom: 30px;
 }
 
+.subscription-card.active .subscription-header {
+  background: linear-gradient(to right, #3a7bd5, #00d2ff);
+  color: white;
+}
+
 .subscription-header {
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 .subscription-title {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 700;
   font-size: 24px;
-  color: #32ddd4;
+  font-weight: 600;
 }
 
 .subscription-status {
   padding: 6px 12px;
-  border-radius: 6px;
-  font-family: "Montserrat", sans-serif;
+  border-radius: 20px;
+  font-size: 14px;
   font-weight: 500;
-  font-size: 12px;
 }
 
 .subscription-status.active {
-  background: rgba(40, 176, 169, 0.2);
-  color: #32ddd4;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .subscription-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
 .subscription-info {
-  flex: 1;
-  min-width: 150px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .subscription-label {
-  font-family: "Montserrat", sans-serif;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 5px;
+  font-size: 14px;
+  color: #666;
 }
 
 .subscription-value {
-  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
   font-weight: 600;
-  font-size: 16px;
-  color: #ffffff;
+  color: #333;
 }
 
 .subscription-features {
-  margin-bottom: 25px;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
 }
 
 .subscription-features-title {
-  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
   font-weight: 600;
-  font-size: 16px;
-  color: #ffffff;
   margin-bottom: 15px;
 }
 
-.subscription-features-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-
-.subscription-feature-item {
-  font-family: "Montserrat", sans-serif;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-}
-
-.subscription-feature-item::before {
-  content: "✓";
-  display: inline-block;
-  margin-right: 8px;
-  color: #32ddd4;
-  font-weight: bold;
+.subscription-description {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
 }
 
 .subscription-actions {
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.subscription-extend,
+.subscription-cancel {
+  flex: 1;
+}
+
+.subscription-actions .btn {
+  width: 100%;
+}
+
+.no-subscription {
   text-align: center;
-}
-
-.subscription-renew {
-  padding: 12px 25px;
-  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
-  border-radius: 12px;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #ffffff;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.subscription-renew:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 176, 169, 0.3);
-}
-
-.subscription-history {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.subscription-history-item {
-  display: flex;
-  align-items: center;
-  padding: 15px;
+  padding: 40px 20px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
 }
 
+.no-subscription-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  opacity: 0.7;
+  filter: invert(1);
+}
+
+.no-subscription h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.no-subscription p {
+  font-family: "Montserrat", sans-serif;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+}
+
+.subscription-history {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.subscription-history-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: 20px;
+  padding: 15px 20px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subscription-history-item:last-child {
+  border-bottom: none;
+}
+
 .subscription-history-date {
-  flex: 0 0 100px;
   font-family: "Montserrat", sans-serif;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
 }
 
 .subscription-history-name {
-  flex: 1;
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
-  font-size: 15px;
   color: #ffffff;
 }
 
 .subscription-history-period {
-  flex: 0 0 100px;
   font-family: "Montserrat", sans-serif;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
-  text-align: center;
 }
 
 .subscription-history-price {
-  flex: 0 0 100px;
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
-  font-size: 15px;
   color: #32ddd4;
-  text-align: right;
+  white-space: nowrap;
+}
+
+.subscription-history-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.subscription-history-status.active {
+  background: rgba(40, 176, 169, 0.1);
+  color: #32ddd4;
+}
+
+.subscription-history-status.expired {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.subscription-history-status.cancelled {
+  background: rgba(255, 85, 85, 0.1);
+  color: #ff5555;
 }
 
 /* Стили для вкладки настроек */
@@ -783,19 +806,22 @@ input:checked + .slider:before {
     padding: 20px;
   }
 
-  .subscription-features-list {
+  .subscription-details {
     grid-template-columns: 1fr;
   }
 
-  .subscription-history-item {
-    flex-wrap: wrap;
-    gap: 10px;
+  .subscription-actions {
+    flex-direction: column;
   }
 
-  .subscription-history-date,
-  .subscription-history-period,
-  .subscription-history-price {
-    flex: 0 0 auto;
+  .subscription-history-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .subscription-history-status {
+    display: inline-block;
   }
 }
 
@@ -862,4 +888,23 @@ input:checked + .slider:before {
 .notification.error {
   background: linear-gradient(180deg, #ff4d4d 0%, #c43535 100%);
   border-left: 4px solid #ff4d4d;
+}
+
+.subscription-cancel-btn {
+  padding: 12px 25px;
+  background: rgba(255, 85, 85, 0.1);
+  border: 1px solid rgba(255, 85, 85, 0.3);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #ff5555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.subscription-cancel-btn:hover {
+  background: rgba(255, 85, 85, 0.2);
 }

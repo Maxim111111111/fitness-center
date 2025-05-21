@@ -40,42 +40,59 @@ if (!function_exists('sanitize')) {
 }
 
 // Function to validate email
-function isValidEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
+if (!function_exists('isValidEmail')) {
+    function isValidEmail($email) {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
 }
 
 // Function to generate random string
-function generateRandomString($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, strlen($characters) - 1)];
+if (!function_exists('generateRandomString')) {
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $randomString;
     }
-    return $randomString;
 }
 
 // Function to check if user is logged in
-function isLoggedIn() {
-    return isset($_SESSION['user_id']) && isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+if (!function_exists('isLoggedIn')) {
+    function isLoggedIn() {
+        return isset($_SESSION['user_id']) && isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+    }
 }
 
 // Function to check if user has specific role
-function hasRole($role) {
-    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === $role;
+if (!function_exists('hasRole')) {
+    function hasRole($role) {
+        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === $role;
+    }
+}
+
+// Function to get user's role
+if (!function_exists('getUserRole')) {
+    function getUserRole() {
+        return $_SESSION['user_role'] ?? null;
+    }
 }
 
 // Function to get current user data
-function getCurrentUser() {
-    global $pdo;
-    if (!isLoggedIn()) {
-        return null;
-    }
-    
-    try {
-        $stmt = $pdo->prepare("SELECT id, username, email, role FROM users WHERE id = ?");
-        $stmt->execute([$_SESSION['user_id']]);
-        return $stmt->fetch();
-    } catch (PDOException $e) {
-        return null;
+if (!function_exists('getCurrentUser')) {
+    function getCurrentUser() {
+        global $pdo;
+        if (!isLoggedIn()) {
+            return null;
+        }
+        
+        try {
+            $stmt = $pdo->prepare("SELECT id, username, email, role FROM users WHERE id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            return null;
+        }
     }
 } 

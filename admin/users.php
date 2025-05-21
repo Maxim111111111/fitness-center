@@ -2,11 +2,11 @@
 session_start();
 require_once('../database/config.php');
 
-// Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
-    header('Location: ../login.php');
-    exit();
-}
+
+require_once('includes/auth_check.php');
+
+// Check access for users
+checkAccess('users');
 
 // Проверка прав на управление пользователями
 if ($_SESSION['user_role'] === 'manager') {
@@ -48,8 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             
             // Добавление пользователя
             try {
+                // Начало транзакции
+                $pdo->beginTransaction();
+                
                 $stmt = $pdo->prepare("
-                    INSERT INTO users (email, password, first_name, last_name, phone, role, is_active, created_at) 
+                    INSERT INTO users (email, password_hash, first_name, last_name, phone, role, is_active, created_at) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
                 ");
                 $stmt->execute([
@@ -62,9 +65,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $isActive
                 ]);
                 
+                // Получаем ID добавленного пользователя
+                $newUserId = $pdo->lastInsertId();
+                
+                // Если роль "trainer", создаем запись в таблице trainers
+                if ($role === 'trainer') {
+                    $insertStmt = $pdo->prepare("
+                        INSERT INTO trainers (user_id, experience_years, bio, is_active, created_at) 
+                        VALUES (?, 0, 'Новый тренер', 1, NOW())
+                    ");
+                    $insertStmt->execute([$newUserId]);
+                }
+                
+                // Завершение транзакции
+                $pdo->commit();
+                
                 header('Location: users.php?success=add');
                 exit();
             } catch (PDOException $e) {
+                // Откат транзакции в случае ошибки
+                $pdo->rollBack();
+                
                 // Логирование ошибки
                 error_log("Database error: " . $e->getMessage());
                 header('Location: users.php?error=add');
@@ -104,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             // Добавление пароля, если он указан
             if (!empty($_POST['password'])) {
                 $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                $sql .= ", password = ?";
+                $sql .= ", password_hash = ?";
                 $params[] = $hashedPassword;
             }
             
@@ -200,6 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             // Обработка AJAX запроса на изменение роли
             header('Content-Type: application/json');
             
+            // Отладочная информация
+            error_log("Change role request: " . json_encode($_POST));
+            
             // Проверка прав
             if ($_SESSION['user_role'] !== 'admin') {
                 exit(json_encode(['success' => false, 'message' => 'Недостаточно прав']));
@@ -213,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $role = $_POST['user_role'];
             
             // Проверка допустимости роли
-            if (!in_array($role, ['admin', 'manager', 'user'])) {
+            if (!in_array($role, ['admin', 'manager', 'trainer', 'user'])) {
                 exit(json_encode(['success' => false, 'message' => 'Недопустимая роль']));
             }
             
@@ -223,11 +247,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             
             try {
+                // Начало транзакции
+                $pdo->beginTransaction();
+                
+                // Обновление роли пользователя
                 $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
                 $stmt->execute([$role, $userId]);
                 
+                // Если роль изменена на "trainer", проверяем наличие записи в таблице trainers
+                if ($role === 'trainer') {
+                    // Проверка существования записи в таблице trainers
+                    $checkStmt = $pdo->prepare("SELECT id FROM trainers WHERE user_id = ?");
+                    $checkStmt->execute([$userId]);
+                    
+                    if (!$checkStmt->fetch()) {
+                        // Если записи нет, создаем новую
+                        $insertStmt = $pdo->prepare("
+                            INSERT INTO trainers (user_id, experience_years, bio, is_active, created_at) 
+                            VALUES (?, 0, 'Новый тренер', 1, NOW())
+                        ");
+                        $insertStmt->execute([$userId]);
+                    }
+                }
+                
+                // Завершение транзакции
+                $pdo->commit();
+                
                 exit(json_encode(['success' => true, 'message' => 'Роль успешно изменена']));
             } catch (PDOException $e) {
+                // Откат транзакции в случае ошибки
+                $pdo->rollBack();
+                
                 error_log("Database error: " . $e->getMessage());
                 exit(json_encode(['success' => false, 'message' => 'Ошибка при изменении роли']));
             }
@@ -324,6 +374,7 @@ include 'includes/header.php';
                     SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS active_users,
                     SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) AS admins,
                     SUM(CASE WHEN role = 'manager' THEN 1 ELSE 0 END) AS managers,
+                    SUM(CASE WHEN role = 'trainer' THEN 1 ELSE 0 END) AS trainers,
                     SUM(CASE WHEN role = 'user' THEN 1 ELSE 0 END) AS normal_users
                 FROM users
             ");
@@ -380,6 +431,19 @@ include 'includes/header.php';
                                     <div class="display-4"><?= $stats['managers'] ?></div>
                                 </div>
                                 <i class="fas fa-user-tie fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">Тренеры</h6>
+                                    <div class="display-4"><?= $stats['trainers'] ?></div>
+                                </div>
+                                <i class="fas fa-user-graduate fa-2x"></i>
                             </div>
                         </div>
                     </div>
@@ -453,6 +517,7 @@ include 'includes/header.php';
                                 <option value="">Все</option>
                                 <option value="admin" <?= $roleFilter === 'admin' ? 'selected' : '' ?>>Администратор</option>
                                 <option value="manager" <?= $roleFilter === 'manager' ? 'selected' : '' ?>>Менеджер</option>
+                                <option value="trainer" <?= $roleFilter === 'trainer' ? 'selected' : '' ?>>Тренер</option>
                                 <option value="user" <?= $roleFilter === 'user' ? 'selected' : '' ?>>Пользователь</option>
                             </select>
                         </div>
@@ -505,11 +570,12 @@ include 'includes/header.php';
                                 <?php if ($_SESSION['user_role'] === 'admin' && $user['id'] != $_SESSION['user_id']): ?>
                                 <select class="form-select form-select-sm role-select" data-user-id="<?= $user['id'] ?>">
                                     <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>Пользователь</option>
+                                    <option value="trainer" <?= $user['role'] === 'trainer' ? 'selected' : '' ?>>Тренер</option>
                                     <option value="manager" <?= $user['role'] === 'manager' ? 'selected' : '' ?>>Менеджер</option>
                                     <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Администратор</option>
                                 </select>
                                 <?php else: ?>
-                                <span class="badge bg-<?= $user['role'] === 'admin' ? 'danger' : ($user['role'] === 'manager' ? 'warning' : 'primary') ?>">
+                                <span class="badge bg-<?= $user['role'] === 'admin' ? 'danger' : ($user['role'] === 'manager' ? 'warning' : ($user['role'] === 'trainer' ? 'info' : 'primary')) ?>">
                                     <?= ucfirst(htmlspecialchars($user['role'])) ?>
                                 </span>
                                 <?php endif; ?>
@@ -607,9 +673,10 @@ include 'includes/header.php';
                     
                     <div class="mb-3">
                         <label for="add-role" class="form-label">Роль <span class="text-danger">*</span></label>
-                        <select class="form-select" id="add-role" name="role" required>
+                        <select class="form-select" id="add-role" name="user_role" required>
                             <option value="user">Пользователь</option>
                             <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                            <option value="trainer">Тренер</option>
                             <option value="manager">Менеджер</option>
                             <option value="admin">Администратор</option>
                             <?php endif; ?>
@@ -672,8 +739,9 @@ include 'includes/header.php';
                     <?php if ($_SESSION['user_role'] === 'admin'): ?>
                     <div class="mb-3">
                         <label for="edit-role" class="form-label">Роль <span class="text-danger">*</span></label>
-                        <select class="form-select" id="edit-role" name="role" required>
+                        <select class="form-select" id="edit-role" name="user_role" required>
                             <option value="user">Пользователь</option>
+                            <option value="trainer">Тренер</option>
                             <option value="manager">Менеджер</option>
                             <option value="admin">Администратор</option>
                         </select>

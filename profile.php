@@ -42,6 +42,27 @@ try {
     error_log("Error fetching user data: " . $e->getMessage());
 }
 
+// Получаем активный абонемент пользователя для отображения в боковой панели
+$activeSubscriptionName = "Нет активного абонемента";
+try {
+    $stmt = $pdo->prepare("
+        SELECT s.name
+        FROM user_subscriptions us
+        JOIN subscriptions s ON us.subscription_id = s.id
+        WHERE us.user_id = ? AND us.status = 'active'
+        AND us.end_date >= CURDATE()
+        ORDER BY us.end_date DESC
+        LIMIT 1
+    ");
+    $stmt->execute([$userId]);
+    $subscriptionData = $stmt->fetch();
+    if ($subscriptionData) {
+        $activeSubscriptionName = $subscriptionData['name'];
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching active subscription name: " . $e->getMessage());
+}
+
 // Для полей, которые могут быть NULL, устанавливаем значения по умолчанию
 $firstName = $userData['first_name'] ?? 'Пользователь';
 $lastName = $userData['last_name'] ?? '';
@@ -151,7 +172,7 @@ function getTrainingTitle($serviceId, $serviceName) {
                         </div>
                         <div class="profile-user-info">
                             <h2 class="profile-user-name" id="userName"><?php echo htmlspecialchars($firstName . ' ' . $lastName); ?></h2>
-                            <p class="profile-user-membership">Стандартный абонемент</p>
+                            <p class="profile-user-membership"><?php echo htmlspecialchars($activeSubscriptionName); ?></p>
                         </div>
                     </div>
                     <nav class="profile-nav">
@@ -364,61 +385,135 @@ function getTrainingTitle($serviceId, $serviceName) {
                             <p class="profile-subtitle">Информация о текущем абонементе</p>
                         </div>
                         
+                        <?php
+                        // Получаем активный абонемент пользователя
+                        $activeSubscription = null;
+                        try {
+                            $stmt = $pdo->prepare("
+                                SELECT us.*, s.name, s.description, s.price, s.duration_days, s.sessions_count
+                                FROM user_subscriptions us
+                                JOIN subscriptions s ON us.subscription_id = s.id
+                                WHERE us.user_id = ? AND us.status = 'active'
+                                AND us.end_date >= CURDATE()
+                                ORDER BY us.end_date DESC
+                                LIMIT 1
+                            ");
+                            $stmt->execute([$userId]);
+                            $activeSubscription = $stmt->fetch();
+                        } catch (PDOException $e) {
+                            error_log("Error fetching active subscription: " . $e->getMessage());
+                        }
+
+                        // Получаем историю покупок абонементов
+                        $subscriptionHistory = [];
+                        try {
+                            $stmt = $pdo->prepare("
+                                SELECT p.*, s.name, s.price, us.start_date, us.end_date, us.status
+                                FROM payments p
+                                JOIN subscriptions s ON p.subscription_id = s.id
+                                JOIN user_subscriptions us ON us.subscription_id = s.id AND us.user_id = p.user_id
+                                WHERE p.user_id = ? AND p.status = 'completed'
+                                ORDER BY p.payment_date DESC
+                                LIMIT 10
+                            ");
+                            $stmt->execute([$userId]);
+                            $subscriptionHistory = $stmt->fetchAll();
+                        } catch (PDOException $e) {
+                            error_log("Error fetching subscription history: " . $e->getMessage());
+                        }
+                        ?>
+                        
                         <div class="profile-section">
+                            <?php if ($activeSubscription): ?>
                             <div class="subscription-card">
                                 <div class="subscription-header">
-                                    <h3 class="subscription-title">Премиум</h3>
+                                    <h3 class="subscription-title"><?= htmlspecialchars($activeSubscription['name']) ?></h3>
                                     <div class="subscription-status active">Активен</div>
                                 </div>
                                 <div class="subscription-details">
                                     <div class="subscription-info">
                                         <div class="subscription-label">Срок действия:</div>
-                                        <div class="subscription-value">до 15.09.2023</div>
+                                        <div class="subscription-value">до <?= date('d.m.Y', strtotime($activeSubscription['end_date'])) ?></div>
                                     </div>
                                     <div class="subscription-info">
                                         <div class="subscription-label">Осталось дней:</div>
-                                        <div class="subscription-value">45</div>
+                                        <div class="subscription-value">
+                                            <?= ceil((strtotime($activeSubscription['end_date']) - time()) / (60 * 60 * 24)) ?>
+                                        </div>
                                     </div>
+                                    <?php if ($activeSubscription['remaining_sessions'] !== null): ?>
                                     <div class="subscription-info">
                                         <div class="subscription-label">Осталось тренировок:</div>
-                                        <div class="subscription-value">12</div>
+                                        <div class="subscription-value"><?= $activeSubscription['remaining_sessions'] ?></div>
                                     </div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="subscription-features">
                                     <h4 class="subscription-features-title">В абонемент входит:</h4>
-                                    <ul class="subscription-features-list">
-                                        <li class="subscription-feature-item">Посещение тренажерного зала</li>
-                                        <li class="subscription-feature-item">Групповые занятия</li>
-                                        <li class="subscription-feature-item">Персональный тренер (2 раза в неделю)</li>
-                                        <li class="subscription-feature-item">Посещение спа-зоны</li>
-                                    </ul>
+                                    <div class="subscription-description">
+                                        <?= nl2br(htmlspecialchars($activeSubscription['description'])) ?>
+                                    </div>
                                 </div>
                                 <div class="subscription-actions">
-                                    <button class="subscription-renew">Продлить абонемент</button>
+                                    <form action="subscription_handler.php" method="post">
+                                        <input type="hidden" name="action" value="purchase">
+                                        <input type="hidden" name="subscription_id" value="<?= $activeSubscription['subscription_id'] ?>">
+                                        <button type="submit" class="subscription-renew">Продлить абонемент</button>
+                                    </form>
+                                    <form action="subscription_handler.php" method="post" onsubmit="return confirm('Вы уверены, что хотите отменить абонемент?');">
+                                        <input type="hidden" name="action" value="cancel">
+                                        <input type="hidden" name="subscription_id" value="<?= $activeSubscription['id'] ?>">
+                                        <button type="submit" class="subscription-cancel-btn">Отменить абонемент</button>
+                                    </form>
                                 </div>
                             </div>
+                            <?php else: ?>
+                            <div class="no-subscription">
+                                <img src="assets/svg/card.svg" alt="Нет активного абонемента" class="no-subscription-icon">
+                                <h3>У вас нет активного абонемента</h3>
+                                <p>Приобретите абонемент, чтобы начать заниматься в нашем фитнес-центре</p>
+                                <a href="subscriptions.php" class="subscription-renew">Выбрать абонемент</a>
+                            </div>
+                            <?php endif; ?>
                         </div>
                         
+                        <?php if (!empty($subscriptionHistory)): ?>
                         <div class="profile-section">
                             <div class="profile-section-header">
                                 <h3 class="profile-section-title">История покупок</h3>
                             </div>
                             
                             <div class="subscription-history">
+                                <?php foreach ($subscriptionHistory as $purchase): ?>
                                 <div class="subscription-history-item">
-                                    <div class="subscription-history-date">15.06.2023</div>
-                                    <div class="subscription-history-name">Абонемент "Премиум"</div>
-                                    <div class="subscription-history-period">3 месяца</div>
-                                    <div class="subscription-history-price">15 000 ₽</div>
+                                    <div class="subscription-history-date">
+                                        <?= date('d.m.Y', strtotime($purchase['payment_date'])) ?>
+                                    </div>
+                                    <div class="subscription-history-name">
+                                        <?= htmlspecialchars($purchase['name']) ?>
+                                    </div>
+                                    <div class="subscription-history-period">
+                                        <?= date('d.m.Y', strtotime($purchase['start_date'])) ?> - 
+                                        <?= date('d.m.Y', strtotime($purchase['end_date'])) ?>
+                                    </div>
+                                    <div class="subscription-history-price">
+                                        <?= number_format($purchase['amount'], 0, '.', ' ') ?> ₽
+                                    </div>
+                                    <div class="subscription-history-status <?= $purchase['status'] ?>">
+                                        <?php
+                                        switch ($purchase['status']) {
+                                            case 'active': echo 'Активен'; break;
+                                            case 'expired': echo 'Истек'; break;
+                                            case 'cancelled': echo 'Отменен'; break;
+                                            default: echo 'Неизвестно';
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
-                                <div class="subscription-history-item">
-                                    <div class="subscription-history-date">15.03.2023</div>
-                                    <div class="subscription-history-name">Абонемент "Стандарт"</div>
-                                    <div class="subscription-history-period">3 месяца</div>
-                                    <div class="subscription-history-price">9 000 ₽</div>
-                                </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
                     
                     <div class="profile-tab" id="profile-settings">

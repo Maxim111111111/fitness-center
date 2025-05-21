@@ -540,4 +540,66 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Произошла ошибка при отмене тренировки");
       });
   }
+
+  // Обработка уведомлений для абонементов
+  document.addEventListener("DOMContentLoaded", function () {
+    // Получаем параметры URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get("tab");
+    const success = urlParams.get("success");
+    const error = urlParams.get("error");
+    const message = urlParams.get("message");
+
+    // Если указана вкладка абонемента, переключаемся на нее
+    if (tab === "profile-subscription") {
+      const subscriptionTab = document.querySelector(
+        '.profile-nav-link[data-tab="profile-subscription"]'
+      );
+      if (subscriptionTab) {
+        subscriptionTab.click();
+      }
+    }
+
+    // Показываем уведомление об успешной операции
+    if (success) {
+      let notificationMessage = "";
+      switch (success) {
+        case "purchased":
+          notificationMessage = "Абонемент успешно приобретен";
+          break;
+        case "extended":
+          notificationMessage = "Абонемент успешно продлен";
+          break;
+        case "cancelled":
+          notificationMessage = "Абонемент отменен";
+          break;
+      }
+      if (notificationMessage) {
+        showNotification(notificationMessage, "success");
+      }
+    }
+
+    // Показываем уведомление об ошибке
+    if (error) {
+      let errorMessage = message || "Произошла ошибка";
+      switch (error) {
+        case "invalid_subscription":
+          errorMessage = "Неверный идентификатор абонемента";
+          break;
+        case "purchase":
+          errorMessage = message || "Ошибка при покупке абонемента";
+          break;
+        case "cancel":
+          errorMessage = message || "Ошибка при отмене абонемента";
+          break;
+      }
+      showNotification(errorMessage, "error");
+    }
+
+    // Очищаем параметры URL без перезагрузки страницы
+    if (success || error) {
+      const newUrl = window.location.pathname + (tab ? `?tab=${tab}` : "");
+      window.history.replaceState({}, "", newUrl);
+    }
+  });
 });

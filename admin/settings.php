@@ -1,12 +1,10 @@
 <?php
 session_start();
 require_once('../database/config.php');
+require_once('includes/auth_check.php');
 
-// Проверка доступа (только для администраторов)
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
-}
+// Check access for settings
+checkAccess('settings');
 
 // Обработка сохранения настроек
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {

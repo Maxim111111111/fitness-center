@@ -91,7 +91,7 @@ function updateUserRole(userId, role) {
   const formData = new FormData();
   formData.append("action", "change_role");
   formData.append("user_id", userId);
-  formData.append("role", role);
+  formData.append("user_role", role);
 
   fetch("users.php", {
     method: "POST",
@@ -182,6 +182,8 @@ function getRoleName(role) {
       return "Администратор";
     case "manager":
       return "Менеджер";
+    case "trainer":
+      return "Тренер";
     case "user":
       return "Пользователь";
     default:

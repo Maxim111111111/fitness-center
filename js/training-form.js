@@ -404,15 +404,19 @@ function submitForm() {
     body: formData,
   })
     .then((response) => {
+      console.log("Response status:", response.status);
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error("Необходимо авторизоваться для записи на тренировку");
         }
-        throw new Error("Ошибка сети при отправке формы");
+        return response.json().then((data) => {
+          throw new Error(data.message || "Ошибка сети при отправке формы");
+        });
       }
       return response.json();
     })
     .then((data) => {
+      console.log("Server response:", data);
       if (data.success) {
         // Успешная запись на тренировку
         showNotification(data.message, "success");
@@ -437,7 +441,10 @@ function submitForm() {
         formWrapper.appendChild(successMessage);
       } else {
         // Ошибка при записи
-        showNotification(data.message, "error");
+        showNotification(
+          data.message || "Произошла ошибка при отправке формы",
+          "error"
+        );
       }
     })
     .catch((error) => {

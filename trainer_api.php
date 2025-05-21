@@ -45,10 +45,10 @@ function getTrainers() {
     global $pdo;
     
     try {
-        // Query to get all active trainers
+        // Убраны поля, которых нет в базе данных
         $query = "
             SELECT t.id, CONCAT(u.first_name, ' ', u.last_name) as name, 
-                   t.specialization, t.experience_years, t.photo_url
+                   t.experience_years, t.photo_url
             FROM trainers t
             JOIN users u ON t.user_id = u.id
             WHERE t.is_active = 1
@@ -68,10 +68,10 @@ function getTrainers() {
         } else {
             // If no trainers found, return demo data
             $demoTrainers = [
-                ['id' => 1, 'name' => 'Иванов Иван', 'specialization' => 'Силовые тренировки'],
-                ['id' => 2, 'name' => 'Петрова Мария', 'specialization' => 'Йога, пилатес'],
-                ['id' => 3, 'name' => 'Сидоров Алексей', 'specialization' => 'Кроссфит'],
-                ['id' => 4, 'name' => 'Козлова Анна', 'specialization' => 'Плавание']
+                ['id' => 1, 'name' => 'Иванов Иван'],
+                ['id' => 2, 'name' => 'Петрова Мария'],
+                ['id' => 3, 'name' => 'Сидоров Алексей'],
+                ['id' => 4, 'name' => 'Козлова Анна']
             ];
             
             echo json_encode([
@@ -108,43 +108,24 @@ function getTrainersByType() {
     }
     
     try {
-        // Map training type to specialization
-        $specialization = '';
-        switch ($trainingType) {
-            case 'personal':
-                $specialization = 'Персональные тренировки';
-                break;
-            case 'group':
-                $specialization = 'Групповые занятия';
-                break;
-            case 'pool':
-                $specialization = 'Плавание';
-                break;
-            case 'gym':
-                $specialization = 'Тренажерный зал';
-                break;
-        }
-        
-        // Query to get trainers by specialization
+        // Упрощенный запрос без проверки специализации
         $query = "
             SELECT t.id, CONCAT(u.first_name, ' ', u.last_name) as name, 
-                   t.specialization, t.experience_years, t.photo_url
+                   t.experience_years, t.photo_url
             FROM trainers t
             JOIN users u ON t.user_id = u.id
-            JOIN trainer_specializations ts ON t.id = ts.trainer_id
-            JOIN specializations s ON ts.specialization_id = s.id
-            WHERE t.is_active = 1 AND s.name LIKE ?
+            WHERE t.is_active = 1
             ORDER BY name
         ";
         
         $stmt = $pdo->prepare($query);
-        $stmt->execute(["%$specialization%"]);
+        $stmt->execute();
         $trainers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         if (count($trainers) > 0) {
             echo json_encode([
                 'success' => true,
-                'message' => 'Тренеры по специализации получены успешно',
+                'message' => 'Тренеры получены успешно',
                 'trainers' => $trainers
             ]);
         } else {
@@ -154,26 +135,26 @@ function getTrainersByType() {
             switch ($trainingType) {
                 case 'personal':
                     $demoTrainers = [
-                        ['id' => 1, 'name' => 'Иван Иванов', 'specialization' => 'Персональные тренировки'],
-                        ['id' => 2, 'name' => 'Петр Петров', 'specialization' => 'Персональные тренировки']
+                        ['id' => 1, 'name' => 'Иван Иванов'],
+                        ['id' => 2, 'name' => 'Петр Петров']
                     ];
                     break;
                 case 'group':
                     $demoTrainers = [
-                        ['id' => 3, 'name' => 'Анна Сидорова', 'specialization' => 'Групповые занятия'],
-                        ['id' => 4, 'name' => 'Мария Кузнецова', 'specialization' => 'Групповые занятия']
+                        ['id' => 3, 'name' => 'Анна Сидорова'],
+                        ['id' => 4, 'name' => 'Мария Кузнецова']
                     ];
                     break;
                 case 'pool':
                     $demoTrainers = [
-                        ['id' => 5, 'name' => 'Алексей Морозов', 'specialization' => 'Плавание'],
-                        ['id' => 6, 'name' => 'Екатерина Волкова', 'specialization' => 'Плавание']
+                        ['id' => 5, 'name' => 'Алексей Морозов'],
+                        ['id' => 6, 'name' => 'Екатерина Волкова']
                     ];
                     break;
                 case 'gym':
                     $demoTrainers = [
-                        ['id' => 7, 'name' => 'Дмитрий Соколов', 'specialization' => 'Тренажерный зал'],
-                        ['id' => 8, 'name' => 'Сергей Новиков', 'specialization' => 'Тренажерный зал']
+                        ['id' => 7, 'name' => 'Дмитрий Соколов'],
+                        ['id' => 8, 'name' => 'Сергей Новиков']
                     ];
                     break;
             }

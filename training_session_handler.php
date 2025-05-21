@@ -52,6 +52,25 @@ try {
     // Start transaction
     $pdo->beginTransaction();
     
+    // Check if the trainer exists
+    $checkTrainer = $pdo->prepare("SELECT COUNT(*) FROM trainers WHERE id = ?");
+    $checkTrainer->execute([$trainerId]);
+    $trainerExists = (int)$checkTrainer->fetchColumn() > 0;
+    
+    if (!$trainerExists) {
+        // If the trainer doesn't exist in the database, use a default trainer or fallback
+        // Get the first available trainer from the database
+        $getDefaultTrainer = $pdo->query("SELECT id FROM trainers LIMIT 1");
+        $defaultTrainer = $getDefaultTrainer->fetch();
+        
+        if ($defaultTrainer) {
+            $trainerId = $defaultTrainer['id'];
+        } else {
+            // No trainers in the database, cannot proceed
+            throw new Exception("Не найдено ни одного тренера в базе данных");
+        }
+    }
+    
     // Check if the selected time slot is available
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as count FROM training_sessions 

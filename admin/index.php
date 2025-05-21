@@ -1,14 +1,12 @@
 <?php
 session_start();
 require_once('../database/config.php');
+require_once('includes/auth_check.php');
 
-// Проверка доступа (только для администраторов и менеджеров)
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
-    header('Location: ../login.php');
-    exit();
-}
+// Check access for the dashboard
+checkAccess('dashboard');
 
-// Получение статистики для дашборда
+// Get statistics for dashboard
 // Общее количество пользователей
 $stmt = $pdo->query("SELECT COUNT(*) FROM users");
 $totalUsers = $stmt->fetchColumn();
