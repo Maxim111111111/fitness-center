@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost:8889
--- Время создания: Май 22 2025 г., 04:52
+-- Время создания: Май 23 2025 г., 19:29
 -- Версия сервера: 8.0.40
 -- Версия PHP: 8.3.14
 
@@ -83,7 +83,12 @@ INSERT INTO `audit_log` (`id`, `user_id`, `entity_type`, `entity_id`, `action`, 
 (14, 53, 'user', 53, 'login', 'User logged in', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-21 20:53:28'),
 (15, 40, 'user', 40, 'login', 'User logged in', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-21 20:54:47'),
 (16, 53, 'user', 53, 'login', 'User logged in', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-21 20:55:44'),
-(17, 40, 'user', 40, 'login', 'User logged in', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-21 21:03:38');
+(17, 40, 'user', 40, 'login', 'User logged in', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-21 21:03:38'),
+(18, 40, 'user', 40, 'login', 'User logged in', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-23 12:03:17'),
+(19, 40, 'training', 10, 'create', 'Training session booked: personal on 2025-05-24 at 08:00', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-23 18:09:25'),
+(20, 40, 'training', 11, 'create', 'Training session booked: personal on 2025-05-23 at 20:00', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-23 18:20:26'),
+(21, 40, 'training', 12, 'create', 'Training session booked: group on 2025-05-23 at 19:00', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-23 18:34:56'),
+(22, 40, 'training', 13, 'create', 'Training session booked: personal on 2025-05-24 at 11:00', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', '2025-05-23 18:38:16');
 
 -- --------------------------------------------------------
 
@@ -111,7 +116,19 @@ INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `type`, `is_re
 (3, 40, 'Запись на тренировку', 'Вы успешно записались на тренировку 23.05.2025 в 09:00. Номер брони: 867CD3BB', 'booking', 0, '2025-05-21 20:12:49'),
 (4, 40, 'Абонемент успешно приобретен', 'Вы успешно приобрели абонемент \"Абонемент на месяц\". Срок действия: до 20.06.2025.', 'system', 0, '2025-05-21 21:29:28'),
 (5, 40, 'Абонемент успешно продлен', 'Вы успешно продлили абонемент \"Абонемент на месяц\". Новый срок действия: до 20.07.2025.', 'system', 0, '2025-05-21 21:29:41'),
-(6, 40, 'Абонемент отменен', 'Ваш абонемент был отменен. Если у вас есть вопросы, пожалуйста, обратитесь к администратору.', 'system', 0, '2025-05-21 21:29:51');
+(6, 40, 'Абонемент отменен', 'Ваш абонемент был отменен. Если у вас есть вопросы, пожалуйста, обратитесь к администратору.', 'system', 0, '2025-05-21 21:29:51'),
+(7, 40, 'Абонемент успешно приобретен', 'Вы успешно приобрели абонемент \"Абонемент на месяц\". Срок действия: до 22.06.2025.', 'system', 0, '2025-05-23 18:03:26'),
+(8, 40, 'Абонемент успешно продлен', 'Вы успешно продлили абонемент \"Абонемент на месяц\". Новый срок действия: до 22.07.2025.', 'system', 0, '2025-05-23 18:08:24'),
+(9, 40, 'Абонемент отменен', 'Ваш абонемент был отменен. Если у вас есть вопросы, пожалуйста, обратитесь к администратору.', 'system', 0, '2025-05-23 18:08:29'),
+(10, 40, 'Абонемент успешно приобретен', 'Вы успешно приобрели абонемент \"Персональные тренировки - 12\". Срок действия: до 21.08.2025.', 'system', 0, '2025-05-23 18:08:50'),
+(11, 40, 'Запись на тренировку', 'Вы успешно записались на тренировку 24.05.2025 в 08:00. Номер брони: 6743D9D6', 'booking', 0, '2025-05-23 18:09:25'),
+(12, 40, 'Абонемент отменен', 'Ваш абонемент был отменен. Если у вас есть вопросы, пожалуйста, обратитесь к администратору.', 'system', 0, '2025-05-23 18:10:39'),
+(13, 40, 'Абонемент успешно приобретен', 'Вы успешно приобрели абонемент \"Разовое посещение\". Срок действия: до 24.05.2025.', 'system', 0, '2025-05-23 18:19:55'),
+(14, 40, 'Запись на тренировку', 'Вы успешно записались на тренировку 23.05.2025 в 20:00. Номер брони: 65823B63', 'booking', 0, '2025-05-23 18:20:26'),
+(15, 40, 'Абонемент отменен', 'Ваш абонемент был отменен. Если у вас есть вопросы, пожалуйста, обратитесь к администратору.', 'system', 0, '2025-05-23 18:31:48'),
+(16, 40, 'Абонемент успешно приобретен', 'Вы успешно приобрели абонемент \"Персональные тренировки - 4\". Срок действия: до 22.06.2025.', 'system', 0, '2025-05-23 18:32:27'),
+(17, 40, 'Запись на тренировку', 'Вы успешно записались на тренировку 23.05.2025 в 19:00. Номер брони: 467FDBCE', 'booking', 0, '2025-05-23 18:34:55'),
+(18, 40, 'Запись на тренировку', 'Вы успешно записались на тренировку 24.05.2025 в 11:00. Номер брони: E0689F23', 'booking', 0, '2025-05-23 18:38:16');
 
 -- --------------------------------------------------------
 
@@ -139,7 +156,12 @@ CREATE TABLE `payments` (
 
 INSERT INTO `payments` (`id`, `user_id`, `subscription_id`, `amount`, `payment_method`, `transaction_id`, `status`, `payment_date`, `notes`, `created_at`, `updated_at`) VALUES
 (1, 40, 2, 4500.00, 'card', NULL, 'completed', '2025-05-21 21:29:28', 'Оплата абонемента Абонемент на месяц', '2025-05-21 21:29:28', '2025-05-21 21:29:28'),
-(2, 40, 2, 4500.00, 'card', NULL, 'completed', '2025-05-21 21:29:41', 'Оплата абонемента Абонемент на месяц', '2025-05-21 21:29:41', '2025-05-21 21:29:41');
+(2, 40, 2, 4500.00, 'card', NULL, 'completed', '2025-05-21 21:29:41', 'Оплата абонемента Абонемент на месяц', '2025-05-21 21:29:41', '2025-05-21 21:29:41'),
+(3, 40, 2, 4500.00, 'card', NULL, 'completed', '2025-05-23 18:03:26', 'Оплата абонемента Абонемент на месяц', '2025-05-23 18:03:26', '2025-05-23 18:03:26'),
+(4, 40, 2, 4500.00, 'card', NULL, 'completed', '2025-05-23 18:08:24', 'Оплата абонемента Абонемент на месяц', '2025-05-23 18:08:24', '2025-05-23 18:08:24'),
+(5, 40, 8, 24000.00, 'card', NULL, 'completed', '2025-05-23 18:08:50', 'Оплата абонемента Персональные тренировки - 12', '2025-05-23 18:08:50', '2025-05-23 18:08:50'),
+(6, 40, 1, 500.00, 'card', NULL, 'completed', '2025-05-23 18:19:55', 'Оплата абонемента Разовое посещение', '2025-05-23 18:19:55', '2025-05-23 18:19:55'),
+(7, 40, 6, 9000.00, 'card', NULL, 'completed', '2025-05-23 18:32:27', 'Оплата абонемента Персональные тренировки - 4', '2025-05-23 18:32:27', '2025-05-23 18:32:27');
 
 -- --------------------------------------------------------
 
@@ -190,7 +212,8 @@ CREATE TABLE `reviews` (
 INSERT INTO `reviews` (`id`, `name`, `email`, `rating`, `text`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'Ольга', 'olga@example.com', 5, 'Мореон Фитнес – семейный премиум фитнес-клуб с бассейном, 40 видами групповых программ, детским клубом, школой единоборств и скалодромом. Оборудование тренажерного зала поставляет эксклюзивный партнер', 'approved', '2025-05-18 19:58:44', NULL),
 (2, 'Алексей', 'alexey@example.com', 4, 'Отличный фитнес-клуб с прекрасными тренерами. Очень доволен результатами после трех месяцев тренировок.', 'approved', '2025-05-18 19:58:44', NULL),
-(3, 'Ирина', 'irina@example.com', 5, 'Просторный тренажерный зал, отличный бассейн, множество групповых программ - все что нужно для полноценных тренировок.', 'approved', '2025-05-18 19:58:44', NULL);
+(3, 'Ирина', 'irina@example.com', 5, 'Просторный тренажерный зал, отличный бассейн, множество групповых программ - все что нужно для полноценных тренировок.', 'approved', '2025-05-18 19:58:44', NULL),
+(5, 'Макс', 'msprog@icloud.com', 3, 'Плохой сервис', 'approved', '2025-05-23 18:48:59', '2025-05-23 18:49:20');
 
 -- --------------------------------------------------------
 
@@ -273,25 +296,25 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`setting_key`, `setting_value`, `description`, `created_at`, `updated_at`) VALUES
-('address', 'Москва, ул. Примерная, д. 123', 'Адрес фитнес-центра', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
+('address', 'Москва, ул. Примерная, д. 123', 'Адрес фитнес-центра', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
 ('available_languages', 'ru,en', 'Доступные языки, через запятую', '2025-05-18 15:50:17', '2025-05-18 15:50:17'),
-('booking_advance_days', '7', NULL, '2025-05-18 16:12:43', '2025-05-19 10:12:02'),
-('cancellation_hours', '24', NULL, '2025-05-18 16:12:43', '2025-05-19 10:12:02'),
+('booking_advance_days', '7', NULL, '2025-05-18 16:12:43', '2025-05-23 18:02:16'),
+('cancellation_hours', '24', NULL, '2025-05-18 16:12:43', '2025-05-23 18:02:16'),
 ('cancellation_policy_hours', '24', 'За сколько часов можно отменить тренировку без штрафа', '2025-05-18 15:50:17', '2025-05-18 15:50:17'),
-('contact_email', 'info@moreonfitness.com', 'Контактный email', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('contact_phone', '+7 (999) 123-45-67', 'Контактный телефон', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
+('contact_email', 'info@moreonfitness.com', 'Контактный email', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('contact_phone', '+7 (999) 123-45-67', 'Контактный телефон', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
 ('default_language', 'ru', 'Язык по умолчанию', '2025-05-18 15:50:17', '2025-05-18 15:50:17'),
-('enable_online_booking', '1', 'Возможность онлайн-бронирования (1 - включено, 0 - выключено)', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('facebook_url', 'https://facebook.com/moreonfitness', 'Facebook URL', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('instagram_url', 'https://instagram.com/moreonfitness', 'Instagram URL', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('maintenance_message', 'Сайт находится на техническом обслуживании. Пожалуйста, зайдите позже.', NULL, '2025-05-18 16:12:43', '2025-05-19 10:12:02'),
-('maintenance_mode', '0', 'Режим обслуживания (1 - включен, 0 - выключен)', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
+('enable_online_booking', '1', 'Возможность онлайн-бронирования (1 - включено, 0 - выключено)', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('facebook_url', 'https://facebook.com/moreonfitness', 'Facebook URL', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('instagram_url', 'https://instagram.com/moreonfitness', 'Instagram URL', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('maintenance_message', 'Сайт находится на техническом обслуживании. Пожалуйста, зайдите позже.', NULL, '2025-05-18 16:12:43', '2025-05-23 18:02:16'),
+('maintenance_mode', '0', 'Режим обслуживания (1 - включен, 0 - выключен)', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
 ('max_booking_days_ahead', '14', 'Максимальное количество дней для предварительного бронирования', '2025-05-18 15:50:17', '2025-05-18 15:50:17'),
-('site_description', 'Фитнес-центр премиум класса', NULL, '2025-05-18 16:12:43', '2025-05-19 10:12:02'),
-('site_name', 'Moreon Fitness', 'Название сайта', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('vk_url', 'https://vk.com/moreonfitness', 'VK URL', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('working_hours', 'Пн-Пт: 7:00-23:00, Сб-Вс: 9:00-22:00', 'Часы работы', '2025-05-18 15:50:17', '2025-05-19 10:12:02'),
-('youtube_url', 'https://youtube.com/moreonfitness', 'YouTube URL', '2025-05-18 15:50:17', '2025-05-19 10:12:02');
+('site_description', 'Фитнес-центр премиум класса', NULL, '2025-05-18 16:12:43', '2025-05-23 18:02:16'),
+('site_name', 'Moreon Fitness', 'Название сайта', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('vk_url', 'https://vk.com/moreonfitness', 'VK URL', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('working_hours', 'Пн-Пт: 7:00-23:00, Сб-Вс: 9:00-22:00', 'Часы работы', '2025-05-18 15:50:17', '2025-05-23 18:02:16'),
+('youtube_url', 'https://youtube.com/moreonfitness', 'YouTube URL', '2025-05-18 15:50:17', '2025-05-23 18:02:16');
 
 -- --------------------------------------------------------
 
@@ -461,13 +484,6 @@ CREATE TABLE `trainer_schedule` (
   `is_active` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Дамп данных таблицы `trainer_schedule`
---
-
-INSERT INTO `trainer_schedule` (`id`, `trainer_id`, `day_of_week`, `start_time`, `end_time`, `is_active`) VALUES
-(16, 13, 3, '01:17:00', '01:17:00', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -526,8 +542,12 @@ CREATE TABLE `training_sessions` (
 INSERT INTO `training_sessions` (`id`, `user_id`, `trainer_id`, `service_id`, `session_date`, `start_time`, `end_time`, `status`, `notes`, `created_at`, `updated_at`) VALUES
 (1, 40, NULL, 11, '2025-05-21', '08:00:00', '09:00:00', 'completed', 'cool', '2025-05-18 17:06:00', '2025-05-18 18:58:24'),
 (2, 40, NULL, 3, '2025-05-19', '12:00:00', '13:00:00', 'completed', 'cool', '2025-05-18 18:25:02', '2025-05-18 18:58:27'),
-(8, 40, 11, 2, '2025-05-23', '09:00:00', '10:00:00', 'pending', 'с', '2025-05-21 20:12:49', '2025-05-21 20:12:49'),
-(9, 40, 16, 1, '2025-05-23', '10:00:00', '11:00:00', 'cancelled', NULL, '2025-05-21 21:01:34', '2025-05-21 21:03:07');
+(8, 40, 11, 2, '2025-05-23', '09:00:00', '10:00:00', 'completed', 'с', '2025-05-21 20:12:49', '2025-05-23 18:21:22'),
+(9, 40, 16, 1, '2025-05-23', '10:00:00', '11:00:00', 'completed', NULL, '2025-05-21 21:01:34', '2025-05-23 18:21:20'),
+(10, 40, 13, 1, '2025-05-24', '08:00:00', '09:00:00', 'completed', '', '2025-05-23 18:09:25', '2025-05-23 18:09:57'),
+(11, 40, 13, 1, '2025-05-23', '20:00:00', '21:00:00', 'completed', '', '2025-05-23 18:20:26', '2025-05-23 18:21:17'),
+(12, 40, 10, 2, '2025-05-23', '19:00:00', '20:00:00', 'completed', 'с', '2025-05-23 18:34:55', '2025-05-23 18:35:14'),
+(13, 40, 11, 1, '2025-05-24', '11:00:00', '12:00:00', 'completed', 'с', '2025-05-23 18:38:16', '2025-05-23 18:38:49');
 
 -- --------------------------------------------------------
 
@@ -586,7 +606,7 @@ INSERT INTO `users` (`id`, `email`, `password_hash`, `role`, `first_name`, `last
 (28, 'user3@example.com', '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.', 'user', 'Наталья', 'Новикова', '+79008901234', '1993-09-10', 'female', NULL, NULL, NULL, 1, NULL, '2025-05-18 15:52:51', '2025-05-18 15:52:51'),
 (29, 'user4@example.com', '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.', 'user', 'Дмитрий', 'Козлов', '+79009012345', '1989-12-05', 'male', NULL, NULL, NULL, 1, NULL, '2025-05-18 15:52:51', '2025-05-18 15:52:51'),
 (30, 'user5@example.com', '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.', 'user', 'Екатерина', 'Морозова', '+79000123456', '1994-06-30', 'female', NULL, NULL, NULL, 1, NULL, '2025-05-18 15:52:51', '2025-05-18 15:52:51'),
-(40, 'msprog@icloud.com', '$2y$10$IRBcYoK.l.I8M7nbyb7I2.Kz24Cmq2EH5g.rf9pBGuLOyHo1S2hm.', 'admin', 'Максим', 'Васильев', '89082515044', '2007-11-22', 'male', 'uploads/avatars/avatar_40_1747648561.jpg', 178, 70, 1, '2025-05-21 21:03:38', '2025-05-18 16:39:57', '2025-05-21 21:03:38'),
+(40, 'msprog@icloud.com', '$2y$10$IRBcYoK.l.I8M7nbyb7I2.Kz24Cmq2EH5g.rf9pBGuLOyHo1S2hm.', 'admin', 'Максим', 'Васильев', '89082515044', '2007-11-22', 'male', 'uploads/avatars/avatar_40_1747648561.jpg', 178, 70, 1, '2025-05-23 12:03:17', '2025-05-18 16:39:57', '2025-05-23 12:03:17'),
 (41, 'maxim.loof@icloud.com', '$2y$10$FJ0/WKViF/dx2r7YLZk1H.XmCXyn6brvV0kKpx.JL2Zfez.caRCZa', 'manager', 'Никита', '', '89082515044', NULL, NULL, NULL, NULL, NULL, 1, '2025-05-18 19:00:15', '2025-05-18 19:00:15', '2025-05-21 20:46:27'),
 (43, 'ivan.petrov@example.com', '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.', 'trainer', 'Иван', 'Петров', '+7 (999) 123-45-67', NULL, 'male', NULL, NULL, NULL, 1, NULL, '2025-05-19 08:24:01', '2025-05-21 20:33:49'),
 (44, 'elena.smirnova@example.com', '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.', 'trainer', 'Елена', 'Смирнова', '+7 (999) 234-56-78', NULL, 'female', NULL, NULL, NULL, 1, NULL, '2025-05-19 08:24:01', '2025-05-21 20:33:49'),
@@ -598,7 +618,7 @@ INSERT INTO `users` (`id`, `email`, `password_hash`, `role`, `first_name`, `last
 (50, 'natalia.orlova@example.com', '$2y$12$TGXyExHP1UsSozalRQiZEuMgBxz2WJnrvz0JFYIf46vFfdt7b5aR.', 'trainer', 'Наталья', 'Орлова', '+7 (999) 890-12-34', NULL, 'female', NULL, NULL, NULL, 1, NULL, '2025-05-19 08:24:01', '2025-05-21 20:33:49'),
 (51, 'test_trainer@example.com', '482c811da5d5b4bc6d497ffa98491e38', 'trainer', 'Тестовый', 'Тренер', '+79001234567', NULL, NULL, NULL, NULL, NULL, 1, NULL, '2025-05-21 20:41:17', '2025-05-21 20:41:17'),
 (52, 'm@m.m', '$2y$10$TyiDqM/MGWgq.zL3etZ0gOidV3ib58z.dy2X7rk3FPvVGmRpX6UkO', 'manager', 'Максим', '', '89082515077', NULL, NULL, NULL, NULL, NULL, 1, '2025-05-21 20:50:13', '2025-05-21 20:48:15', '2025-05-21 20:50:13'),
-(53, 'q@q.q', '$2y$10$LQFm9GoLXWy1e8MUaCjXqOKky/iKtMgh7gkxCS1ZGq4QL37zwXMf.', 'trainer', 'Максим', '', '89083334447', NULL, NULL, NULL, NULL, NULL, 1, '2025-05-21 20:55:44', '2025-05-21 20:51:47', '2025-05-21 20:55:44');
+(53, 'q@q.q', '$2y$10$LQFm9GoLXWy1e8MUaCjXqOKky/iKtMgh7gkxCS1ZGq4QL37zwXMf.', 'trainer', 'Максим', 'Васильев', '89083334447', NULL, NULL, NULL, NULL, NULL, 1, '2025-05-21 20:55:44', '2025-05-21 20:51:47', '2025-05-22 04:54:06');
 
 -- --------------------------------------------------------
 
@@ -614,15 +634,20 @@ CREATE TABLE `user_subscriptions` (
   `end_date` date NOT NULL,
   `remaining_sessions` int DEFAULT NULL,
   `status` enum('active','expired','cancelled') DEFAULT 'active',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `user_subscriptions`
 --
 
-INSERT INTO `user_subscriptions` (`id`, `user_id`, `subscription_id`, `start_date`, `end_date`, `remaining_sessions`, `status`, `created_at`) VALUES
-(2, 40, 2, '2025-05-21', '2025-07-20', NULL, 'cancelled', '2025-05-21 21:29:28');
+INSERT INTO `user_subscriptions` (`id`, `user_id`, `subscription_id`, `start_date`, `end_date`, `remaining_sessions`, `status`, `created_at`, `updated_at`) VALUES
+(2, 40, 2, '2025-05-21', '2025-07-20', NULL, 'cancelled', '2025-05-21 21:29:28', '2025-05-23 18:37:22'),
+(3, 40, 2, '2025-05-23', '2025-07-22', NULL, 'cancelled', '2025-05-23 18:03:26', '2025-05-23 18:37:22'),
+(4, 40, 8, '2025-05-23', '2025-08-21', 12, 'cancelled', '2025-05-23 18:08:50', '2025-05-23 18:37:22'),
+(5, 40, 1, '2025-05-23', '2025-05-24', 1, 'cancelled', '2025-05-23 18:19:55', '2025-05-23 18:37:22'),
+(6, 40, 6, '2025-05-23', '2025-06-22', 3, 'active', '2025-05-23 18:32:27', '2025-05-23 18:38:49');
 
 --
 -- Индексы сохранённых таблиц
@@ -796,19 +821,19 @@ ALTER TABLE `api_tokens`
 -- AUTO_INCREMENT для таблицы `audit_log`
 --
 ALTER TABLE `audit_log`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT для таблицы `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT для таблицы `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT для таблицы `permissions`
@@ -820,7 +845,7 @@ ALTER TABLE `permissions`
 -- AUTO_INCREMENT для таблицы `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `services`
@@ -868,7 +893,7 @@ ALTER TABLE `trainer_schedule`
 -- AUTO_INCREMENT для таблицы `training_sessions`
 --
 ALTER TABLE `training_sessions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблицы `translations`
@@ -886,7 +911,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `user_subscriptions`
 --
 ALTER TABLE `user_subscriptions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
