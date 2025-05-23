@@ -18,8 +18,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Обновляем URL без перезагрузки страницы
       history.pushState(null, null, this.getAttribute("href"));
+
+      // Если открыта вкладка абонемента, запускаем обновление данных
+      if (tabId === "profile-subscription") {
+        updateRemainingSessionsCount();
+        // Запускаем периодическое обновление
+        clearInterval(updateInterval);
+        updateInterval = setInterval(updateRemainingSessionsCount, 30000); // каждые 30 секунд
+      } else {
+        // Останавливаем обновление для других вкладок
+        clearInterval(updateInterval);
+      }
     });
   });
+
+  // Проверяем, открыта ли вкладка абонемента при загрузке страницы
+  const subscriptionTab = document.getElementById("profile-subscription");
+  if (subscriptionTab && subscriptionTab.classList.contains("active")) {
+    updateRemainingSessionsCount();
+    updateInterval = setInterval(updateRemainingSessionsCount, 30000);
+  }
 
   // Редактирование профиля
   const editProfileBtn = document.getElementById("editProfileBtn");
@@ -601,5 +619,69 @@ document.addEventListener("DOMContentLoaded", function () {
       const newUrl = window.location.pathname + (tab ? `?tab=${tab}` : "");
       window.history.replaceState({}, "", newUrl);
     }
+  });
+
+  // Функция для обновления количества оставшихся тренировок
+  function updateRemainingSessionsCount() {
+    // Проверяем, активна ли вкладка с абонементом
+    if ($("#profile-subscription").is(":visible")) {
+      console.log("Обновляем количество оставшихся тренировок...");
+
+      fetch("get_subscription_data.php")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Получены данные:", data);
+          if (
+            data.success &&
+            data.subscription &&
+            data.subscription.remaining_sessions !== undefined
+          ) {
+            $("#remaining-sessions-count").text(
+              data.subscription.remaining_sessions
+            );
+            console.log(
+              "Обновлено количество оставшихся тренировок:",
+              data.subscription.remaining_sessions
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Ошибка при обновлении количества тренировок:", error);
+        });
+    }
+  }
+
+  // Интервал для обновления количества оставшихся тренировок
+  let updateInterval;
+
+  // Запускаем обновление при активации вкладки с абонементом
+  function startUpdating() {
+    if ($("#profile-subscription").is(":visible")) {
+      updateRemainingSessionsCount(); // Обновляем сразу
+      updateInterval = setInterval(updateRemainingSessionsCount, 30000); // Затем каждые 30 секунд
+    }
+  }
+
+  // Останавливаем обновление при переключении на другую вкладку
+  function stopUpdating() {
+    clearInterval(updateInterval);
+  }
+
+  // Обработчик переключения вкладок
+  $(".profile-nav-link").on("click", function () {
+    const tabId = $(this).data("tab");
+
+    // Останавливаем текущий интервал обновления
+    stopUpdating();
+
+    // Если переключились на вкладку абонемента, запускаем обновление
+    if (tabId === "profile-subscription") {
+      startUpdating();
+    }
+  });
+
+  // Запускаем обновление при загрузке страницы, если активна вкладка абонемента
+  $(document).ready(function () {
+    startUpdating();
   });
 });

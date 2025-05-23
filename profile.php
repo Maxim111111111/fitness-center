@@ -143,6 +143,103 @@ function getTrainingTitle($serviceId, $serviceName) {
     return $serviceName;
 }
 
+// Получаем активный абонемент пользователя
+$activeSubscription = null;
+try {
+    // Запрос для получения активного абонемента
+    $stmt = $pdo->prepare("
+        SELECT us.*, s.name, s.description, s.price, s.duration_days, s.sessions_count
+        FROM user_subscriptions us
+        JOIN subscriptions s ON us.subscription_id = s.id
+        WHERE us.user_id = ? AND us.status = 'active'
+        AND us.end_date >= CURDATE()
+        ORDER BY us.end_date DESC
+        LIMIT 1
+    ");
+    $stmt->execute([$userId]);
+    $activeSubscription = $stmt->fetch();
+    
+    if ($activeSubscription) {
+        error_log("Найден абонемент: ID {$activeSubscription['id']}, remaining_sessions: " . 
+            var_export($activeSubscription['remaining_sessions'], true));
+        
+        // Проверяем, есть ли завершенные тренировки, которые еще не учтены
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) as completed_count, MAX(updated_at) as last_updated
+            FROM training_sessions 
+            WHERE user_id = ? 
+            AND status = 'completed' 
+            AND updated_at > ?
+        ");
+        $stmt->execute([$userId, $activeSubscription['updated_at'] ?? '1970-01-01']);
+        $result = $stmt->fetch();
+        $completedCount = $result['completed_count'];
+        $lastUpdated = $result['last_updated'];
+        
+        error_log("Количество завершенных тренировок после последнего обновления: $completedCount, последнее обновление: $lastUpdated");
+        error_log("Последнее обновление абонемента: {$activeSubscription['updated_at']}");
+        
+        // Если есть завершенные тренировки после последнего обновления абонемента
+        if ($completedCount > 0 && $activeSubscription['remaining_sessions'] !== null) {
+            $newRemaining = max(0, $activeSubscription['remaining_sessions'] - $completedCount);
+            error_log("Обновляем remaining_sessions с {$activeSubscription['remaining_sessions']} на $newRemaining");
+            
+            // Обновляем количество оставшихся тренировок
+            $updateStmt = $pdo->prepare("
+                UPDATE user_subscriptions 
+                SET remaining_sessions = ?, 
+                    updated_at = NOW()
+                WHERE id = ?
+            ");
+            $updateStmt->execute([$newRemaining, $activeSubscription['id']]);
+            
+            // Проверяем, действительно ли обновилось значение
+            $rowCount = $updateStmt->rowCount();
+            error_log("Количество обновленных строк: $rowCount");
+            
+            if ($rowCount > 0) {
+                // Обновляем данные для отображения
+                $activeSubscription['remaining_sessions'] = $newRemaining;
+                
+                // Получаем обновленное время
+                $checkStmt = $pdo->prepare("SELECT updated_at FROM user_subscriptions WHERE id = ?");
+                $checkStmt->execute([$activeSubscription['id']]);
+                $newUpdatedAt = $checkStmt->fetchColumn();
+                
+                error_log("Данные абонемента обновлены в профиле пользователя, новое время обновления: $newUpdatedAt");
+            } else {
+                error_log("ОШИБКА: Не удалось обновить значение remaining_sessions в базе данных");
+            }
+        } else if ($completedCount > 0) {
+            error_log("Есть завершенные тренировки, но абонемент безлимитный (remaining_sessions = NULL)");
+        } else {
+            error_log("Нет новых завершенных тренировок после последнего обновления абонемента");
+        }
+    } else {
+        error_log("Активный абонемент не найден для пользователя ID: $userId");
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching active subscription: " . $e->getMessage());
+}
+
+// Получаем историю покупок абонементов
+$subscriptionHistory = [];
+try {
+    $stmt = $pdo->prepare("
+        SELECT p.*, s.name, s.price, us.start_date, us.end_date, us.status
+        FROM payments p
+        JOIN subscriptions s ON p.subscription_id = s.id
+        JOIN user_subscriptions us ON us.subscription_id = s.id AND us.user_id = p.user_id
+        WHERE p.user_id = ? AND p.status = 'completed'
+        ORDER BY p.payment_date DESC
+        LIMIT 10
+    ");
+    $stmt->execute([$userId]);
+    $subscriptionHistory = $stmt->fetchAll();
+} catch (PDOException $e) {
+    error_log("Error fetching subscription history: " . $e->getMessage());
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -385,44 +482,6 @@ function getTrainingTitle($serviceId, $serviceName) {
                             <p class="profile-subtitle">Информация о текущем абонементе</p>
                         </div>
                         
-                        <?php
-                        // Получаем активный абонемент пользователя
-                        $activeSubscription = null;
-                        try {
-                            $stmt = $pdo->prepare("
-                                SELECT us.*, s.name, s.description, s.price, s.duration_days, s.sessions_count
-                                FROM user_subscriptions us
-                                JOIN subscriptions s ON us.subscription_id = s.id
-                                WHERE us.user_id = ? AND us.status = 'active'
-                                AND us.end_date >= CURDATE()
-                                ORDER BY us.end_date DESC
-                                LIMIT 1
-                            ");
-                            $stmt->execute([$userId]);
-                            $activeSubscription = $stmt->fetch();
-                        } catch (PDOException $e) {
-                            error_log("Error fetching active subscription: " . $e->getMessage());
-                        }
-
-                        // Получаем историю покупок абонементов
-                        $subscriptionHistory = [];
-                        try {
-                            $stmt = $pdo->prepare("
-                                SELECT p.*, s.name, s.price, us.start_date, us.end_date, us.status
-                                FROM payments p
-                                JOIN subscriptions s ON p.subscription_id = s.id
-                                JOIN user_subscriptions us ON us.subscription_id = s.id AND us.user_id = p.user_id
-                                WHERE p.user_id = ? AND p.status = 'completed'
-                                ORDER BY p.payment_date DESC
-                                LIMIT 10
-                            ");
-                            $stmt->execute([$userId]);
-                            $subscriptionHistory = $stmt->fetchAll();
-                        } catch (PDOException $e) {
-                            error_log("Error fetching subscription history: " . $e->getMessage());
-                        }
-                        ?>
-                        
                         <div class="profile-section">
                             <?php if ($activeSubscription): ?>
                             <div class="subscription-card">
@@ -444,7 +503,7 @@ function getTrainingTitle($serviceId, $serviceName) {
                                     <?php if ($activeSubscription['remaining_sessions'] !== null): ?>
                                     <div class="subscription-info">
                                         <div class="subscription-label">Осталось тренировок:</div>
-                                        <div class="subscription-value"><?= $activeSubscription['remaining_sessions'] ?></div>
+                                        <div class="subscription-value" id="remaining-sessions-count"><?= $activeSubscription['remaining_sessions'] ?></div>
                                     </div>
                                     <?php endif; ?>
                                 </div>

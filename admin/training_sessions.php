@@ -43,6 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         $stmt->execute([$status, $session_id, $trainerId]);
                         
                         if ($stmt->rowCount() > 0) {
+                            // Если статус изменен на "completed", обновляем количество оставшихся тренировок
+                            if ($status === 'completed') {
+                                updateRemainingSessionsCount($pdo, $session_id);
+                            }
                             $response = ['success' => true, 'message' => 'Статус успешно обновлен'];
                         } else {
                             $response = ['success' => false, 'message' => 'У вас нет прав на изменение этой записи или запись не найдена'];
@@ -54,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $stmt->execute([$status, $session_id]);
                     
                     if ($stmt->rowCount() > 0) {
+                        // Если статус изменен на "completed", обновляем количество оставшихся тренировок
+                        if ($status === 'completed') {
+                            updateRemainingSessionsCount($pdo, $session_id);
+                        }
                         $response = ['success' => true, 'message' => 'Статус успешно обновлен'];
                     } else {
                         $response = ['success' => false, 'message' => 'Ошибка при обновлении статуса'];
@@ -87,6 +95,157 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
     echo json_encode($response);
     exit;
+}
+
+/**
+ * Функция для обновления количества оставшихся тренировок в абонементе пользователя
+ * @param PDO $pdo - объект PDO для работы с базой данных
+ * @param int $session_id - ID тренировки
+ */
+function updateRemainingSessionsCount($pdo, $session_id) {
+    try {
+        error_log("===== НАЧАЛО ОБНОВЛЕНИЯ ТРЕНИРОВОК =====");
+        error_log("Начало обновления количества оставшихся тренировок для тренировки ID: $session_id");
+        
+        // Получаем информацию о тренировке и пользователе
+        $stmt = $pdo->prepare("
+            SELECT ts.user_id, ts.service_id, u.first_name, u.last_name, ts.status, ts.updated_at as session_updated
+            FROM training_sessions ts
+            JOIN users u ON ts.user_id = u.id
+            WHERE ts.id = ?
+        ");
+        $stmt->execute([$session_id]);
+        $session = $stmt->fetch();
+        
+        if (!$session) {
+            error_log("Тренировка с ID $session_id не найдена");
+            return;
+        }
+        
+        $user_id = $session['user_id'];
+        $user_name = $session['first_name'] . ' ' . $session['last_name'];
+        $session_status = $session['status'];
+        $session_updated = $session['session_updated'];
+        
+        error_log("Обработка тренировки для пользователя: $user_name (ID: $user_id), статус тренировки: $session_status, время обновления: $session_updated");
+        
+        // Проверяем, действительно ли статус "completed"
+        if ($session_status !== 'completed') {
+            error_log("Статус тренировки не 'completed', а '$session_status'. Обновление счетчика не требуется.");
+            return;
+        }
+        
+        // Получаем активный абонемент пользователя
+        $stmt = $pdo->prepare("
+            SELECT us.id, us.subscription_id, us.remaining_sessions, us.status, us.updated_at as sub_updated, 
+                   s.name as subscription_name, s.sessions_count
+            FROM user_subscriptions us
+            JOIN subscriptions s ON us.subscription_id = s.id
+            WHERE us.user_id = ? 
+            AND us.status = 'active' 
+            AND us.end_date >= CURDATE()
+            ORDER BY us.end_date DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$user_id]);
+        $subscription = $stmt->fetch();
+        
+        if (!$subscription) {
+            error_log("Активный абонемент для пользователя $user_id ($user_name) не найден");
+            return;
+        }
+        
+        error_log("Найден активный абонемент: {$subscription['subscription_name']} (ID: {$subscription['id']})");
+        error_log("Текущее значение remaining_sessions: " . var_export($subscription['remaining_sessions'], true));
+        error_log("Общее количество тренировок в абонементе: " . var_export($subscription['sessions_count'], true));
+        error_log("Статус абонемента: " . $subscription['status']);
+        error_log("Время последнего обновления абонемента: " . $subscription['sub_updated']);
+        
+        // Проверяем, не было ли уже учтено это обновление
+        if ($subscription['sub_updated'] > $session_updated) {
+            error_log("Абонемент уже был обновлен после изменения статуса тренировки. Пропускаем обновление.");
+            error_log("Время обновления абонемента: {$subscription['sub_updated']}, время обновления тренировки: $session_updated");
+            return;
+        }
+        
+        // Проверяем, есть ли у абонемента ограничение по количеству тренировок
+        if ($subscription['remaining_sessions'] !== null) {
+            // Уменьшаем количество оставшихся тренировок на 1, но не меньше 0
+            $remaining = max(0, $subscription['remaining_sessions'] - 1);
+            
+            error_log("Обновление количества тренировок: было {$subscription['remaining_sessions']}, станет $remaining");
+            
+            // Обновляем количество оставшихся тренировок
+            $stmt = $pdo->prepare("
+                UPDATE user_subscriptions 
+                SET remaining_sessions = ?,
+                    updated_at = NOW()
+                WHERE id = ?
+            ");
+            $stmt->execute([$remaining, $subscription['id']]);
+            
+            // Проверяем, действительно ли обновилось значение
+            $rowCount = $stmt->rowCount();
+            error_log("Количество обновленных строк: $rowCount");
+            
+            if ($rowCount > 0) {
+                error_log("Значение remaining_sessions успешно обновлено в базе данных");
+                
+                // Проверяем значение после обновления
+                $stmt = $pdo->prepare("
+                    SELECT remaining_sessions, updated_at FROM user_subscriptions WHERE id = ?
+                ");
+                $stmt->execute([$subscription['id']]);
+                $updated = $stmt->fetch();
+                error_log("Проверка после обновления: remaining_sessions = {$updated['remaining_sessions']}, updated_at = {$updated['updated_at']}");
+                
+                // Обновляем кэш сессии, если это нужно
+                if (isset($_SESSION['user_subscription']) && $_SESSION['user_subscription']['id'] == $subscription['id']) {
+                    $_SESSION['user_subscription']['remaining_sessions'] = $remaining;
+                    error_log("Обновлен кэш сессии для абонемента");
+                }
+            } else {
+                error_log("ОШИБКА: Не удалось обновить значение remaining_sessions в базе данных");
+            }
+            
+            // Логируем в системный журнал
+            $stmt = $pdo->prepare("
+                INSERT INTO audit_log (user_id, action, entity_type, entity_id, details) 
+                VALUES (?, 'update_sessions', 'user_subscription', ?, ?)
+            ");
+            $details = json_encode([
+                'previous_value' => $subscription['remaining_sessions'],
+                'new_value' => $remaining,
+                'training_session_id' => $session_id
+            ]);
+            $stmt->execute([$_SESSION['user_id'], $subscription['id'], $details]);
+            
+            error_log("Обновлено количество оставшихся тренировок для абонемента {$subscription['id']}: $remaining");
+            
+            // Если тренировок не осталось, отправляем уведомление пользователю
+            if ($remaining === 0) {
+                error_log("У пользователя $user_name закончились тренировки в абонементе");
+                
+                // Добавляем уведомление для пользователя
+                try {
+                    $stmt = $pdo->prepare("
+                        INSERT INTO notifications (user_id, type, title, message, is_read) 
+                        VALUES (?, 'subscription', 'Закончились тренировки', 'В вашем абонементе закончились тренировки. Пожалуйста, продлите абонемент для продолжения занятий.', 0)
+                    ");
+                    $stmt->execute([$user_id]);
+                    error_log("Уведомление о закончившихся тренировках отправлено пользователю $user_id");
+                } catch (PDOException $e) {
+                    error_log("Ошибка при отправке уведомления: " . $e->getMessage());
+                }
+            }
+        } else {
+            error_log("Абонемент {$subscription['id']} имеет безлимитное количество тренировок");
+        }
+        error_log("===== КОНЕЦ ОБНОВЛЕНИЯ ТРЕНИРОВОК =====");
+    } catch (PDOException $e) {
+        error_log("ОШИБКА при обновлении количества оставшихся тренировок: " . $e->getMessage());
+        error_log("Трассировка стека: " . $e->getTraceAsString());
+    }
 }
 
 // Пагинация

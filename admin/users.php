@@ -382,71 +382,46 @@ include 'includes/header.php';
             ?>
 
             <!-- Статистика пользователей -->
-            <div class="row mb-4">
-                <div class="col-md">
-                    <div class="card text-white bg-primary">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="card-title mb-0">Всего пользователей</h6>
-                                    <div class="display-4"><?= $stats['total_users'] ?></div>
-                                </div>
-                                <i class="fas fa-users fa-2x"></i>
-                            </div>
-                        </div>
+            <div class="quick-stats mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-users"></i>
                     </div>
+                    <h4>Всего пользователей</h4>
+                    <p><?= $stats['total_users'] ?></p>
+                    <span class="text-muted">Все зарегистрированные пользователи</span>
                 </div>
-                <div class="col-md">
-                    <div class="card text-white bg-success">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="card-title mb-0">Активные пользователи</h6>
-                                    <div class="display-4"><?= $stats['active_users'] ?></div>
-                                </div>
-                                <i class="fas fa-user-check fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-user-check"></i>
                     </div>
+                    <h4>Активные пользователи</h4>
+                    <p><?= $stats['active_users'] ?></p>
+                    <span class="text-muted"><?= round(($stats['active_users'] / $stats['total_users']) * 100) ?>% от общего числа</span>
                 </div>
-                <div class="col-md">
-                    <div class="card text-white bg-danger">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="card-title mb-0">Администраторы</h6>
-                                    <div class="display-4"><?= $stats['admins'] ?></div>
-                                </div>
-                                <i class="fas fa-user-shield fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-user-shield"></i>
                     </div>
+                    <h4>Администраторы</h4>
+                    <p><?= $stats['admins'] ?></p>
+                    <span class="text-muted">Полный доступ к системе</span>
                 </div>
-                <div class="col-md">
-                    <div class="card text-white bg-warning">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="card-title mb-0">Менеджеры</h6>
-                                    <div class="display-4"><?= $stats['managers'] ?></div>
-                                </div>
-                                <i class="fas fa-user-tie fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-user-tie"></i>
                     </div>
+                    <h4>Менеджеры</h4>
+                    <p><?= $stats['managers'] ?></p>
+                    <span class="text-muted">Управление контентом</span>
                 </div>
-                <div class="col-md">
-                    <div class="card text-white bg-info">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="card-title mb-0">Тренеры</h6>
-                                    <div class="display-4"><?= $stats['trainers'] ?></div>
-                                </div>
-                                <i class="fas fa-user-graduate fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
+                    <h4>Тренеры</h4>
+                    <p><?= $stats['trainers'] ?></p>
+                    <span class="text-muted">Проведение тренировок</span>
                 </div>
             </div>
 

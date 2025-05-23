@@ -11,9 +11,9 @@ require_once(__DIR__ . '/auth_check.php');
     <div class="px-3 mb-3">
         <div class="d-flex align-items-center">
             <div class="flex-shrink-0">
-                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--border-color);">
-                    <i class="fas fa-user text-accent"></i>
-                </div>
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--border-color);">
+                        
+                    </div>
             </div>
             <div class="flex-grow-1 ms-2">
                 <h6 class="mb-0 fs-6"><?= htmlspecialchars(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? '')) ?></h6>
@@ -79,14 +79,7 @@ require_once(__DIR__ . '/auth_check.php');
             </li>
             <?php endif; ?>
             
-            <?php if (hasPermission('schedule')): ?>
-            <li>
-                <a href="schedule.php" class="<?= basename($_SERVER['PHP_SELF']) === 'schedule.php' ? 'active' : '' ?>">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Расписание</span>
-                </a>
-            </li>
-            <?php endif; ?>
+            
             
             <?php if (hasPermission('training_sessions')): ?>
             <li>

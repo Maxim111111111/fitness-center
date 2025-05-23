@@ -194,11 +194,47 @@ h6 {
   transition: transform 0.2s ease;
   border: 1px solid var(--border-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
 }
 
 .stat-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card .stat-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-size: 1.5rem;
+}
+
+.stat-card:nth-child(1) .stat-icon-wrapper {
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+}
+
+.stat-card:nth-child(2) .stat-icon-wrapper {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.stat-card:nth-child(3) .stat-icon-wrapper {
+  background: linear-gradient(135deg, #f5576c, #f093fb);
+}
+
+.stat-card:nth-child(4) .stat-icon-wrapper {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+.stat-card:nth-child(5) .stat-icon-wrapper {
+  background: linear-gradient(135deg, #0082c8, #667db6);
 }
 
 .stat-card h4 {
@@ -217,6 +253,23 @@ h6 {
 
 .stat-card .text-muted {
   font-size: 0.8rem;
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .quick-stats {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .quick-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    margin-bottom: 15px;
+  }
 }
 
 /* Tables */
@@ -407,9 +460,5 @@ canvas {
 
   .sidebar.show {
     transform: translateX(0);
-  }
-
-  .quick-stats {
-    grid-template-columns: 1fr;
   }
 }

@@ -71,6 +71,11 @@ switch ($action) {
                 $startDate = date('Y-m-d'); // Сегодня
                 $endDate = date('Y-m-d', strtotime($startDate . ' + ' . $subscription['duration_days'] . ' days'));
                 
+                // Логирование для отладки
+                error_log("Создание нового абонемента для пользователя ID: $userId");
+                error_log("Тип абонемента: {$subscription['name']} (ID: {$subscription['id']})");
+                error_log("sessions_count из таблицы subscriptions: " . var_export($subscription['sessions_count'], true));
+                
                 $insertStmt = $pdo->prepare("
                     INSERT INTO user_subscriptions (
                         user_id, subscription_id, start_date, end_date, 
@@ -84,6 +89,17 @@ switch ($action) {
                     $endDate, 
                     $subscription['sessions_count']
                 ]);
+                
+                // Получаем ID созданного абонемента
+                $newSubscriptionId = $pdo->lastInsertId();
+                
+                // Проверяем, что значение remaining_sessions установлено корректно
+                $checkStmt = $pdo->prepare("SELECT remaining_sessions FROM user_subscriptions WHERE id = ?");
+                $checkStmt->execute([$newSubscriptionId]);
+                $remainingSessionsValue = $checkStmt->fetchColumn();
+                
+                error_log("Новый абонемент создан с ID: $newSubscriptionId");
+                error_log("Установленное значение remaining_sessions: " . var_export($remainingSessionsValue, true));
                 
                 $subscriptionAction = 'purchased';
             }

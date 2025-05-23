@@ -289,3 +289,509 @@
 .rating-star.active {
   background-image: url("../assets/svg/star-filled.svg");
 }
+
+/* Стили для отображения звезд в отзывах */
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.star.active {
+  color: #32ddd4;
+}
+
+.star.half-active {
+  position: relative;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.star.half-active::after {
+  content: "★";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #32ddd4;
+}
+
+/* Новые стили для улучшенного блока отзывов */
+.reviews-section {
+  padding: 60px 0;
+  background-color: #001010;
+  position: relative;
+  overflow: hidden;
+}
+
+.reviews-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../assets/svg/pattern-dark.svg") repeat;
+  opacity: 0.05;
+  z-index: 1;
+}
+
+.reviews-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.reviews-section__title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 36px;
+  line-height: 1.2;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Статистика отзывов */
+.reviews-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  background: rgba(0, 24, 23, 0.8);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(50, 221, 212, 0.1);
+}
+
+.reviews-stats__summary {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.reviews-stats__average {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+}
+
+.reviews-stats__score {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 48px;
+  line-height: 1;
+  color: #32ddd4;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(50, 221, 212, 0.3);
+}
+
+.reviews-stats__stars {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.reviews-stats__stars .star {
+  font-size: 24px;
+}
+
+.reviews-stats__count {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+  opacity: 0.7;
+}
+
+.reviews-stats__distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.reviews-stats__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reviews-stats__star-count {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+  min-width: 15px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.reviews-stats__bar-container {
+  flex: 1;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reviews-stats__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(50, 221, 212, 0.5);
+}
+
+.reviews-stats__bar-count {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+  min-width: 30px;
+  text-align: right;
+  opacity: 0.7;
+}
+
+.reviews-stats__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reviews-stats__button {
+  padding: 12px 24px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 12px rgba(40, 176, 169, 0.3);
+  transition: all 0.3s ease;
+}
+
+.reviews-stats__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 176, 169, 0.5);
+}
+
+/* Фильтр отзывов */
+.reviews-filter {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.reviews-filter__label {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.reviews-filter__options {
+  display: flex;
+  gap: 10px;
+}
+
+.reviews-filter__option {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reviews-filter__option:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.reviews-filter__option.active {
+  background: #32ddd4;
+  color: #001010;
+  box-shadow: 0 0 10px rgba(50, 221, 212, 0.5);
+}
+
+/* Карточки отзывов */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.review-card {
+  background: rgba(0, 24, 23, 0.8);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(50, 221, 212, 0.1);
+}
+
+.review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: rgba(50, 221, 212, 0.2);
+}
+
+.review-card__header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.review-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #32ddd4 0%, #1a746f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(50, 221, 212, 0.3);
+}
+
+.review-card__info {
+  flex: 1;
+}
+
+.review-card__name {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.review-card__date {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.review-card__rating {
+  display: flex;
+  gap: 2px;
+}
+
+.review-card__rating .star {
+  font-size: 16px;
+}
+
+.review-card__content {
+  margin-bottom: 20px;
+}
+
+.review-card__text {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.review-card__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.review-card__helpful {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.review-card__helpful:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.review-card__helpful.active {
+  background: rgba(50, 221, 212, 0.2);
+  color: #32ddd4;
+}
+
+.review-card__helpful-text {
+  display: inline-block;
+}
+
+/* Пустые отзывы */
+.reviews-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: rgba(0, 24, 23, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(50, 221, 212, 0.1);
+}
+
+.reviews-empty__icon {
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.reviews-empty__title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.reviews-empty__text {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin-bottom: 30px;
+  max-width: 400px;
+}
+
+.reviews-empty__button {
+  padding: 12px 24px;
+  background: linear-gradient(180deg, #32ddd4 0%, #1a746f 100%);
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 12px rgba(40, 176, 169, 0.3);
+  transition: all 0.3s ease;
+}
+
+.reviews-empty__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 176, 169, 0.5);
+}
+
+/* Пагинация */
+.reviews-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.reviews-pagination__button {
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid #32ddd4;
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #32ddd4;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reviews-pagination__button:hover {
+  background: rgba(50, 221, 212, 0.1);
+  box-shadow: 0 0 15px rgba(50, 221, 212, 0.3);
+}
+
+/* Адаптивность для новых стилей */
+@media (max-width: 992px) {
+  .reviews-stats {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .reviews-stats__action {
+    width: 100%;
+  }
+
+  .reviews-stats__button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .reviews-section {
+    padding: 40px 0;
+  }
+
+  .reviews-section__title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .reviews-stats {
+    padding: 20px;
+  }
+
+  .reviews-stats__summary {
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+  }
+
+  .reviews-stats__average {
+    align-items: center;
+    width: 100%;
+  }
+
+  .reviews-filter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .review-card__helpful-text {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .reviews-section__title {
+    font-size: 24px;
+  }
+
+  .reviews-stats__score {
+    font-size: 36px;
+  }
+
+  .reviews-stats__stars .star {
+    font-size: 20px;
+  }
+
+  .review-card {
+    padding: 20px 15px;
+  }
+}
